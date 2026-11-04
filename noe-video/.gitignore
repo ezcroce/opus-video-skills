@@ -1,0 +1,11 @@
+node_modules/
+sparticuz/
+chromiumtest/
+out/frames/
+out/check/
+out/stills/
+*.tgz
+audio/narration/
+audio/music.wav
+audio/mix.wav
+out/video.mp4

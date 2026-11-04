@@ -1,0 +1,16 @@
+{
+  "name": "noe-promise-video",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node dev.mjs",
+    "render": "node render.mjs"
+  },
+  "dependencies": {
+    "@fontsource/fraunces": "5.2.5",
+    "@fontsource/nunito": "5.2.5",
+    "puppeteer-core": "24.10.0",
+    "three": "0.180.0"
+  }
+}
