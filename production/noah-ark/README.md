@@ -7,6 +7,7 @@ Production pack built from the storyboard "NOÈ – L'UOMO CHE ASCOLTÒ DIO" usi
 | File | Purpose |
 |---|---|
 | `README.md` | Platform choice, timing check, workflow, costs |
+| `cut-3min.md` | Three-minute cut: which scenes and shots to keep, and the trade-offs |
 | `prompts.md` | Character bible, style line, and 32 shot prompts (≤15 s each) for Kling 3.0, plus narration lines |
 | `reference/noah-character-sheet.png` | Character reference for Noè (use as a Kling Element, plus one image per family member) |
 | `audio/narration-*.mp3` | Ten Italian narration clips, one per scene, in the narrator voice `voice-00` |
@@ -24,12 +25,10 @@ Alternative: **Veo 3.1** (strongest native audio, but no multi-reference charact
 
 ## Timing check
 
-The storyboard's scene durations add up to **435 s (7 min 15 s)**, not the 2–3 minutes in its header. Two options:
+The storyboard's scene durations add up to **435 s (7 min 15 s)**, not the 2–3 minutes in its header.
 
-1. **Keep the full story (~7 min).** This is 32 shots of 12–15 s each. Recommended if you want the whole narrative.
-2. **Cut to ~3 min.** Keep scenes 1, 3, 4, 8, 10 and 11 at full length and shorten the rest. Tell me which, and I'll rewrite the shot list.
-
-`prompts.md` covers the full 11 scenes.
+- **Full story (~7 min):** 32 shots in `prompts.md`.
+- **3-minute cut (175 s):** scenes 1, 3, 8 and 10 only, 14 shots. See `cut-3min.md`.
 
 ## Workflow
 
