@@ -20,6 +20,7 @@ Each skill in this repository teaches Claude Opus 5.5 to produce a complete vide
 | [painted-animation](skills/painted-animation/) | Hand-painted watercolour and ink cartoon, with character acting | Animated shorts, music videos, lyric videos with karaoke |
 | [kinetic-reel](skills/kinetic-reel/) | Kinetic typography: condensed display type, HUD micro-type, WebGL layers | Portfolio and work reels, showreels, product and intro films |
 | [ai-media-generator](skills/ai-media-generator/) | Prompt craft and browser automation for AI image, video and music platforms | Choosing a generator (Kling, Seedance, Veo, Suno, Midjourney, Runway…) and writing its prompt |
+| [bitwize-music](plugins/claude-ai-music-skills/) | AI music production for Suno: concepts, lyrics, prompts, mastering, release | Writing and releasing albums (53 skills, MCP server) |
 
 ### painted-animation
 
@@ -86,6 +87,7 @@ Each skill scaffolds a project, presents a storyboard, builds and reviews every 
 | `.claude-plugin/marketplace.json` | Plugin marketplace manifest (one plugin per skill) |
 | `skills/painted-animation/` | Watercolour animation skill: engine, guides, examples |
 | `skills/kinetic-reel/` | Kinetic-typography reel skill: engine, guides, examples |
+| `plugins/claude-ai-music-skills/` | Vendored [bitwize-music-studio/claude-ai-music-skills](https://github.com/bitwize-music-studio/claude-ai-music-skills) (CC0-1.0): music production plugin |
 | `skills/ai-media-generator/` | Vendored [Hao0321/ai-media-generator](https://github.com/Hao0321/ai-media-generator) (MIT): AI image/video/music prompt skill |
 
 ## Adding a Style
