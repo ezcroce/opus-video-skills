@@ -8,6 +8,8 @@ Production pack built from the storyboard "NOÈ – L'UOMO CHE ASCOLTÒ DIO" usi
 |---|---|
 | `README.md` | Platform choice, timing check, workflow, costs |
 | `prompts.md` | Character bible, style line, and 32 shot prompts (≤15 s each) for Kling 3.0, plus narration lines |
+| `reference/noah-character-sheet.png` | Character reference for Noè (use as a Kling Element, plus one image per family member) |
+| `audio/narration-*.mp3` | Ten Italian narration clips, one per scene, in the narrator voice `voice-00` |
 
 ## Platform choice: Kling 3.0
 
