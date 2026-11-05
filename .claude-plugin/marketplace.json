@@ -13,9 +13,17 @@
       "description": "Hand-painted watercolour-and-ink cartoons and lyric videos: p5.js + p5.brush, rendered frame by frame in headless Chrome, with storyboarding, character acting, beat sync and karaoke.",
       "source": "./",
       "strict": false,
-      "skills": ["./skills/painted-animation"],
+      "skills": [
+        "./skills/painted-animation"
+      ],
       "category": "design",
-      "keywords": ["animation", "watercolour", "lyric-video", "music-video", "p5js"],
+      "keywords": [
+        "animation",
+        "watercolour",
+        "lyric-video",
+        "music-video",
+        "p5js"
+      ],
       "homepage": "https://github.com/tuzhechen2005/opus-video-skills/tree/main/skills/painted-animation"
     },
     {
@@ -23,10 +31,36 @@
       "description": "Kinetic-typography motion reels: bold condensed type, HUD micro-type, three.js generative layers, shape-continuity transitions and a synthesized beat-locked score.",
       "source": "./",
       "strict": false,
-      "skills": ["./skills/kinetic-reel"],
+      "skills": [
+        "./skills/kinetic-reel"
+      ],
       "category": "design",
-      "keywords": ["motion-graphics", "kinetic-typography", "showreel", "threejs", "webgl"],
+      "keywords": [
+        "motion-graphics",
+        "kinetic-typography",
+        "showreel",
+        "threejs",
+        "webgl"
+      ],
       "homepage": "https://github.com/tuzhechen2005/opus-video-skills/tree/main/skills/kinetic-reel"
+    },
+    {
+      "name": "ai-media-generator",
+      "description": "Prompt craft and browser automation for AI image, video and music generation: picks the right platform (Kling, Seedance, Veo, Suno, Midjourney, Runway and more) and writes platform-specific prompts. Vendored from Hao0321/ai-media-generator (MIT).",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/ai-media-generator"
+      ],
+      "category": "media",
+      "keywords": [
+        "ai-video",
+        "ai-image",
+        "ai-music",
+        "prompt",
+        "storyboard"
+      ],
+      "homepage": "https://github.com/Hao0321/ai-media-generator"
     }
   ]
 }

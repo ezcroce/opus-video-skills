@@ -19,6 +19,7 @@
 |---|---|---|
 | [painted-animation](skills/painted-animation/) | 手绘水彩与墨线卡通，带角色表演 | 动画短片、音乐视频、带卡拉 OK 字幕的歌词 MV |
 | [kinetic-reel](skills/kinetic-reel/) | 动态排版：窄体大字、HUD 式小字标注、WebGL 图层 | 作品集短片、Showreel、产品片与片头 |
+| [ai-media-generator](skills/ai-media-generator/) | AI 生图、生视频、生音乐的提示词与浏览器自动化 | 选择生成平台（可灵、Seedance、Veo、Suno、Midjourney、Runway 等）并撰写提示词 |
 
 ### painted-animation
 
@@ -46,6 +47,7 @@
 /plugin marketplace add tuzhechen2005/opus-video-skills
 /plugin install painted-animation@opus-video-skills
 /plugin install kinetic-reel@opus-video-skills
+/plugin install ai-media-generator@opus-video-skills
 ```
 
 可以只装其中一个，也可以都装。之后用 `/plugin update` 获取新版本。
@@ -56,6 +58,7 @@
 git clone https://github.com/tuzhechen2005/opus-video-skills ~/opus-video-skills
 ln -s ~/opus-video-skills/skills/painted-animation ~/.claude/skills/painted-animation
 ln -s ~/opus-video-skills/skills/kinetic-reel ~/.claude/skills/kinetic-reel
+ln -s ~/opus-video-skills/skills/ai-media-generator ~/.claude/skills/ai-media-generator
 ```
 
 之后在 `~/opus-video-skills` 中执行 `git pull` 即可更新。
@@ -79,6 +82,7 @@ ln -s ~/opus-video-skills/skills/kinetic-reel ~/.claude/skills/kinetic-reel
 | `.claude-plugin/marketplace.json` | 插件市场清单（每个技能对应一个插件） |
 | `skills/painted-animation/` | 水彩动画技能：引擎、指南与示例 |
 | `skills/kinetic-reel/` | 动态排版短片技能：引擎、指南与示例 |
+| `skills/ai-media-generator/` | 收录自 [Hao0321/ai-media-generator](https://github.com/Hao0321/ai-media-generator)（MIT）：AI 图像/视频/音乐提示词技能 |
 
 ## 新增风格
 

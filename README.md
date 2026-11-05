@@ -19,6 +19,7 @@ Each skill in this repository teaches Claude Opus 5.5 to produce a complete vide
 |---|---|---|
 | [painted-animation](skills/painted-animation/) | Hand-painted watercolour and ink cartoon, with character acting | Animated shorts, music videos, lyric videos with karaoke |
 | [kinetic-reel](skills/kinetic-reel/) | Kinetic typography: condensed display type, HUD micro-type, WebGL layers | Portfolio and work reels, showreels, product and intro films |
+| [ai-media-generator](skills/ai-media-generator/) | Prompt craft and browser automation for AI image, video and music platforms | Choosing a generator (Kling, Seedance, Veo, Suno, Midjourney, Runway…) and writing its prompt |
 
 ### painted-animation
 
@@ -46,6 +47,7 @@ Combines a 2D type canvas with three.js layers (particle terrain, liquid marble,
 /plugin marketplace add tuzhechen2005/opus-video-skills
 /plugin install painted-animation@opus-video-skills
 /plugin install kinetic-reel@opus-video-skills
+/plugin install ai-media-generator@opus-video-skills
 ```
 
 Install either skill or both. `/plugin update` fetches new versions.
@@ -56,6 +58,7 @@ Install either skill or both. `/plugin update` fetches new versions.
 git clone https://github.com/tuzhechen2005/opus-video-skills ~/opus-video-skills
 ln -s ~/opus-video-skills/skills/painted-animation ~/.claude/skills/painted-animation
 ln -s ~/opus-video-skills/skills/kinetic-reel ~/.claude/skills/kinetic-reel
+ln -s ~/opus-video-skills/skills/ai-media-generator ~/.claude/skills/ai-media-generator
 ```
 
 Updating is then a `git pull` in `~/opus-video-skills`.
@@ -70,6 +73,10 @@ Describe the video in Claude Code. The matching skill is selected automatically,
 
 > Make a 60-second kinetic-type reel of my three projects from this résumé.
 
+> /ai-media-generator write a Seedance prompt for a cinematic horse charge at dawn.
+
+The `ai-media-generator` skill can also be tagged directly: type `/` in Claude Code and pick it from the list (personal symlink install), or mention it by name in your message.
+
 Each skill scaffolds a project, presents a storyboard, builds and reviews every shot, and writes the finished MP4 to the project's `out/` directory.
 
 ## Repository Structure
@@ -79,6 +86,7 @@ Each skill scaffolds a project, presents a storyboard, builds and reviews every 
 | `.claude-plugin/marketplace.json` | Plugin marketplace manifest (one plugin per skill) |
 | `skills/painted-animation/` | Watercolour animation skill: engine, guides, examples |
 | `skills/kinetic-reel/` | Kinetic-typography reel skill: engine, guides, examples |
+| `skills/ai-media-generator/` | Vendored [Hao0321/ai-media-generator](https://github.com/Hao0321/ai-media-generator) (MIT): AI image/video/music prompt skill |
 
 ## Adding a Style
 
@@ -86,7 +94,7 @@ A new style is a new directory under `skills/` containing a `SKILL.md`, a runnab
 
 ## Acknowledgements
 
-The painted-animation engine and guide are adapted from [ClaudeAnimationBase](https://github.com/JohnHeibel/ClaudeAnimationBase) by John Heibel (MIT License), and the method follows his [PDoomVideo](https://github.com/JohnHeibel/PDoomVideo). The kinetic-reel renderer is derived from the same kit. The projects use p5.js, p5.brush, three.js, Puppeteer and ffmpeg. The skills and examples were produced with Claude Opus 5.5 in Claude Code.
+The painted-animation engine and guide are adapted from [ClaudeAnimationBase](https://github.com/JohnHeibel/ClaudeAnimationBase) by John Heibel (MIT License), and the method follows his [PDoomVideo](https://github.com/JohnHeibel/PDoomVideo). The kinetic-reel renderer is derived from the same kit. The ai-media-generator skill is vendored from [Hao0321/ai-media-generator](https://github.com/Hao0321/ai-media-generator) (MIT) without modification. The projects use p5.js, p5.brush, three.js, Puppeteer and ffmpeg. The skills and examples were produced with Claude Opus 5.5 in Claude Code.
 
 ## License
 
