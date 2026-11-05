@@ -48,3 +48,24 @@ Kling bills per second of output, and native audio costs more. Budget roughly 43
 - The storyboard's reference images link to other websites. I didn't use them, because they belong to other creators and aren't licensed for this project.
 - Dialogue is in Italian, in quotation marks. Keep Kling dialogue lines to 3–5 seconds each. Longer lines drift out of sync, according to `references/kling.md`.
 - The on-screen quote is Genesis 9:13. Check the wording against your Bible translation before publishing.
+
+## Assembling the MP4
+
+When the Kling clips are ready, put them in the folders below and run the script. It needs ffmpeg.
+
+```
+production/noah-ark/
+├── clips/        1.1.mp4 1.2.mp4 1.3.mp4 3.1.mp4 … 10.4.mp4   (14 shots, with audio)
+├── audio/        narration-*.mp3                               (already here)
+└── music/        score.mp3                                     (optional background score)
+```
+
+```bash
+bash production/noah-ark/scripts/assemble-3min.sh
+```
+
+The output is `out/noah-ark-3min.mp4` (1920×1080, 24 fps, H.264 and AAC). `out/` is git-ignored, so the finished video stays out of the repository.
+
+- Each scene's narration starts at that scene's real start time, so it stays in sync even if a shot is longer or shorter than planned.
+- Each clip needs an audio track. Kling clips generated with native audio have one. For a silent clip, add a silent track first.
+- To use ffmpeg from a different location, set `FFMPEG=/path/to/ffmpeg`.
