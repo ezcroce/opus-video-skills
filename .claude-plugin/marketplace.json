@@ -61,6 +61,21 @@
         "storyboard"
       ],
       "homepage": "https://github.com/Hao0321/ai-media-generator"
+    },
+    {
+      "name": "bitwize-music",
+      "description": "AI music production for Suno: album concepts, lyrics, Suno prompts, mastering, promo and release. Vendored from bitwize-music-studio/claude-ai-music-skills (CC0-1.0).",
+      "source": "./plugins/claude-ai-music-skills",
+      "strict": false,
+      "category": "music",
+      "keywords": [
+        "music",
+        "suno",
+        "lyrics",
+        "mastering",
+        "album"
+      ],
+      "homepage": "https://github.com/bitwize-music-studio/claude-ai-music-skills"
     }
   ]
 }
