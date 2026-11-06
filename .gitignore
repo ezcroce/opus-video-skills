@@ -3,3 +3,8 @@ node_modules/
 out/
 __pycache__/
 *.wav
+
+# podcast pipeline artefacts: generated audio, masters and manifests
+segments/
+segments.json
+episodes/

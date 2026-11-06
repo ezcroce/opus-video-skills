@@ -1,0 +1,17 @@
+{
+  "provider": "elevenlabs",
+  "language": "pt-BR",
+  "voiceHint": "Warm, conversational, mid-register. Sounds like a person talking to one listener, not announcing to a room. No radio affect, no rising sing-song at the end of sentences.",
+  "settings": {
+    "model": "eleven_multilingual_v2",
+    "stability": 0.4,
+    "similarity_boost": 0.8,
+    "style": 0.15,
+    "use_speaker_boost": true,
+    "wpm": 170,
+    "instructions": "Read like a podcast host thinking out loud: relaxed pace, small pauses at commas, land the sign-off slowly."
+  },
+  "voices": {
+    "VIVI": { "voice": "REPLACE_WITH_ELEVENLABS_VOICE_ID", "model": "eleven_multilingual_v2" }
+  }
+}

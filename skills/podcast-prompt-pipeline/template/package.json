@@ -1,0 +1,16 @@
+{
+  "name": "podcast-prompt-pipeline",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Prompt-to-podcast pipeline: block-structured script, per-block TTS, ffmpeg master",
+  "scripts": {
+    "check": "node check_script.mjs",
+    "check:strict": "node check_script.mjs --strict",
+    "tts": "node tts.mjs",
+    "manifest": "node tts.mjs --manifest",
+    "finalize": "node tts.mjs --finalize",
+    "assemble": "node assemble.mjs --sting",
+    "episode": "node check_script.mjs --strict && node tts.mjs && node assemble.mjs --sting"
+  }
+}

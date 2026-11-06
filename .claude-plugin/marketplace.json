@@ -5,7 +5,7 @@
     "name": "tuzhechen2005"
   },
   "metadata": {
-    "description": "Video-making skills for Claude Opus 5.5 in Claude Code: every frame and every note generated in code, one skill per visual style."
+    "description": "Video and podcast skills for Claude Opus 5.5 in Claude Code: every frame and every note generated in code, one skill per style, plus a prompt pipeline for spoken audio."
   },
   "plugins": [
     {
@@ -13,9 +13,17 @@
       "description": "Hand-painted watercolour-and-ink cartoons and lyric videos: p5.js + p5.brush, rendered frame by frame in headless Chrome, with storyboarding, character acting, beat sync and karaoke.",
       "source": "./",
       "strict": false,
-      "skills": ["./skills/painted-animation"],
+      "skills": [
+        "./skills/painted-animation"
+      ],
       "category": "design",
-      "keywords": ["animation", "watercolour", "lyric-video", "music-video", "p5js"],
+      "keywords": [
+        "animation",
+        "watercolour",
+        "lyric-video",
+        "music-video",
+        "p5js"
+      ],
       "homepage": "https://github.com/tuzhechen2005/opus-video-skills/tree/main/skills/painted-animation"
     },
     {
@@ -23,10 +31,36 @@
       "description": "Kinetic-typography motion reels: bold condensed type, HUD micro-type, three.js generative layers, shape-continuity transitions and a synthesized beat-locked score.",
       "source": "./",
       "strict": false,
-      "skills": ["./skills/kinetic-reel"],
+      "skills": [
+        "./skills/kinetic-reel"
+      ],
       "category": "design",
-      "keywords": ["motion-graphics", "kinetic-typography", "showreel", "threejs", "webgl"],
+      "keywords": [
+        "motion-graphics",
+        "kinetic-typography",
+        "showreel",
+        "threejs",
+        "webgl"
+      ],
       "homepage": "https://github.com/tuzhechen2005/opus-video-skills/tree/main/skills/kinetic-reel"
+    },
+    {
+      "name": "podcast-prompt-pipeline",
+      "description": "Podcast episodes from a prompt chain: four-block script, per-block text-to-speech, ffmpeg master at -16 LUFS with a procedurally generated signature and chapters.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/podcast-prompt-pipeline"
+      ],
+      "category": "audio",
+      "keywords": [
+        "podcast",
+        "audio",
+        "text-to-speech",
+        "prompt-engineering",
+        "script"
+      ],
+      "homepage": "https://github.com/tuzhechen2005/opus-video-skills/tree/main/skills/podcast-prompt-pipeline"
     }
   ]
 }

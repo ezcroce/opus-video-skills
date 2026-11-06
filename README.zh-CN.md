@@ -5,13 +5,15 @@
 <a href="README.md"><img src="https://img.shields.io/badge/English-0E0F0E?style=for-the-badge" alt="English"></a>
 <a href="README.zh-CN.md"><img src="https://img.shields.io/badge/简体中文-DDF53D?style=for-the-badge" alt="简体中文"></a>
 
-基于 Claude Opus 5.5 的视频制作技能合集（Claude Code Skills），每种视觉风格对应一个技能。
+基于 Claude Opus 5.5 的视频与播客制作技能合集（Claude Code Skills），每种视觉风格对应一个技能，另有一个面向音频。
 
 </div>
 
 ## 概述
 
-本仓库中的每个技能都能让 Claude Opus 5.5 以一种特定的视觉风格独立完成整部视频，涵盖分镜、动画、审查、配乐与最终编码。所有画面和音乐均由代码程序化生成，不依赖任何图像、视频或音频生成模型。每一帧都由时间唯一确定，在无头 Chrome 中渲染，并由 ffmpeg 编码输出。
+本仓库中的每个技能都能让 Claude Opus 5.5 以一种特定的风格独立完成整部作品，涵盖分镜、动画、审查、配乐与最终编码。所有画面和音乐均由代码程序化生成，不依赖任何图像、视频或音频生成模型。每一帧都由时间唯一确定，在无头 Chrome 中渲染，并由 ffmpeg 编码输出。
+
+例外是 [podcast-prompt-pipeline](skills/podcast-prompt-pipeline/README.zh-CN.md)：它是音频技能，从一条提示词链（标题、分块脚本、音色）出发，产出母带级单集。文字由 Claude 撰写，人声来自 TTS 服务，拼装与签名音由 ffmpeg 完成。
 
 ## 风格
 
@@ -19,6 +21,7 @@
 |---|---|---|
 | [painted-animation](skills/painted-animation/) | 手绘水彩与墨线卡通，带角色表演 | 动画短片、音乐视频、带卡拉 OK 字幕的歌词 MV |
 | [kinetic-reel](skills/kinetic-reel/) | 动态排版：窄体大字、HUD 式小字标注、WebGL 图层 | 作品集短片、Showreel、产品片与片头 |
+| [podcast-prompt-pipeline](skills/podcast-prompt-pipeline/) | 提示词链驱动的播客制作：分块脚本、TTS、母带 MP3 | 播客单集、音频随笔、旁白式节目简介 |
 
 ### painted-animation
 
@@ -32,11 +35,16 @@
 
 在二维排版画布之上叠加 three.js 图层（粒子地形、流体大理石纹、铬金属扭结、可聚合成特定形状的粒子云），并经过 WebGL 后期处理。镜头之间采用形状连贯的转场，配乐与画面由同一条时间轴合成。示例为 84 秒的作品集短片《Work Reel ’26》。[说明文档](skills/kinetic-reel/README.zh-CN.md)。
 
+### podcast-prompt-pipeline
+
+移植自 DIO Santander 2024 训练营项目 [Vivian Lima 的 prompts_for_podcast_by-IA](https://github.com/Vivianflima/prompts_for_podcast_by-IA)。四个职责固定的块（`ABERTURA`、两个 `CURIOSIDADE`、`FINALIZAÇÃO`）；校验器在花掉任何 TTS 额度之前，先拦下混入语音的 Markdown、裸数字与超时的时长预算；逐块合成让一句话的修改不必重做整集；最后由 ffmpeg 输出 −16 LUFS 的母带，并带程序化生成的签名音。示例为 3 分 46 秒的葡语单集《O bug que ninguém viu》。[说明文档](skills/podcast-prompt-pipeline/README.zh-CN.md)。
+
 ## 环境要求
 
 - Claude Code 及 Claude Opus 5.5
 - Node.js、Google Chrome、ffmpeg
 - Python 3 及 numpy（仅 painted-animation 的节拍检测需要）
+- podcast-prompt-pipeline 需要一种 TTS 服务：ElevenLabs、OpenAI、macOS `say` 或 `espeak-ng`
 
 ## 安装
 
@@ -46,6 +54,7 @@
 /plugin marketplace add tuzhechen2005/opus-video-skills
 /plugin install painted-animation@opus-video-skills
 /plugin install kinetic-reel@opus-video-skills
+/plugin install podcast-prompt-pipeline@opus-video-skills
 ```
 
 可以只装其中一个，也可以都装。之后用 `/plugin update` 获取新版本。
@@ -56,6 +65,7 @@
 git clone https://github.com/tuzhechen2005/opus-video-skills ~/opus-video-skills
 ln -s ~/opus-video-skills/skills/painted-animation ~/.claude/skills/painted-animation
 ln -s ~/opus-video-skills/skills/kinetic-reel ~/.claude/skills/kinetic-reel
+ln -s ~/opus-video-skills/skills/podcast-prompt-pipeline ~/.claude/skills/podcast-prompt-pipeline
 ```
 
 之后在 `~/opus-video-skills` 中执行 `git pull` 即可更新。
@@ -79,6 +89,7 @@ ln -s ~/opus-video-skills/skills/kinetic-reel ~/.claude/skills/kinetic-reel
 | `.claude-plugin/marketplace.json` | 插件市场清单（每个技能对应一个插件） |
 | `skills/painted-animation/` | 水彩动画技能：引擎、指南与示例 |
 | `skills/kinetic-reel/` | 动态排版短片技能：引擎、指南与示例 |
+| `skills/podcast-prompt-pipeline/` | 播客技能：提示词集、脚本校验器、TTS 适配器、ffmpeg 母带 |
 
 ## 新增风格
 
@@ -86,7 +97,7 @@ ln -s ~/opus-video-skills/skills/kinetic-reel ~/.claude/skills/kinetic-reel
 
 ## 致谢
 
-painted-animation 的动画引擎与指南改编自 John Heibel 的 [ClaudeAnimationBase](https://github.com/JohnHeibel/ClaudeAnimationBase)（MIT 协议），整体方法参照其 [PDoomVideo](https://github.com/JohnHeibel/PDoomVideo)；kinetic-reel 的渲染器同样由该工具包改编而来。本项目使用了 p5.js、p5.brush、three.js、Puppeteer 与 ffmpeg。各技能及示例均由 Claude Opus 5.5 在 Claude Code 中完成。
+painted-animation 的动画引擎与指南改编自 John Heibel 的 [ClaudeAnimationBase](https://github.com/JohnHeibel/ClaudeAnimationBase)（MIT 协议），整体方法参照其 [PDoomVideo](https://github.com/JohnHeibel/PDoomVideo)；kinetic-reel 的渲染器同样由该工具包改编而来。播客流水线、提示词集与《PodQAst Inteligente》的节目构想来自 [Vivian Lima](https://github.com/Vivianflima/prompts_for_podcast_by-IA)（MIT 许可），为 DIO Santander 2024 训练营项目。本项目使用了 p5.js、p5.brush、three.js、Puppeteer 与 ffmpeg。各技能及示例均由 Claude Opus 5.5 在 Claude Code 中完成。
 
 ## 许可协议
 

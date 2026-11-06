@@ -1,0 +1,7 @@
+# generated audio and masters stay out of git
+segments/
+out/
+music/bed.mp3
+music/bed.wav
+node_modules/
+.DS_Store
