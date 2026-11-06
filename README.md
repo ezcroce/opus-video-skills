@@ -76,6 +76,8 @@ Each skill scaffolds a project, presents a storyboard, builds and reviews every 
 
 [projects/opus-video-skills-reel/](projects/opus-video-skills-reel/) is an 18-second reel **about this repository**, made with `kinetic-reel`: storyboard, `cues.js`, nine shots, a synthesized beat-locked score, review sheets and the finished MP4 (plus a browser watch page with HTTP Range support). It is fully offline — the four display fonts are local copies instead of Google Fonts — and documents how to re-render it.
 
+[projects/moses-exodus-reel/](projects/moses-exodus-reel/) is its one-minute companion: *MOSES — EXODUS IN 60 SECONDS*, also built with `kinetic-reel`. Six chapters, sixteen shots, 1440 frames at 24 fps and a score synthesized from the same `cues.js`. Every on-screen fact is a scripture reference (Exodus / Numbers / Deuteronomy) and every diagram is labelled `SCHEMATIC`. It includes the storyboard, review sheets, both MP4s and the same offline watch page.
+
 The scaffold scripts also tolerate machines without `rsync` (`cp -a` fallback), and `render.mjs` accepts an `FFMPEG` environment variable so a static ffmpeg binary can be used when none is on `PATH`.
 
 ## Repository Structure
@@ -86,6 +88,7 @@ The scaffold scripts also tolerate machines without `rsync` (`cp -a` fallback), 
 | `skills/painted-animation/` | Watercolour animation skill: engine, guides, examples |
 | `skills/kinetic-reel/` | Kinetic-typography reel skill: engine, guides, examples |
 | `projects/opus-video-skills-reel/` | Worked 18 s reel built with `kinetic-reel`, including the finished MP4 |
+| `projects/moses-exodus-reel/` | Worked 60 s biblical-Moses reel built with `kinetic-reel`, including the finished MP4 |
 
 ## Adding a Style
 

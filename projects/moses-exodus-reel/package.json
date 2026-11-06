@@ -1,0 +1,19 @@
+{
+  "name": "moses-exodus-60s",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MOSES — EXODUS IN 60 SECONDS: a one-minute kinetic-typography reel about the biblical Moses, built with the kinetic-reel skill",
+  "scripts": {
+    "serve": "node serve.mjs 8000",
+    "sheet": "node render.mjs --sheet=1.8,3.6,7.4,12.2,14.5,17.7,19.6,20.03,24.6,28.8,33.6,35.8,39.4,43.8,47.4,53.4,56.5 --cols=4 --w=480 --out=review/sheet-final.jpg --soft-gl",
+    "transitions": "node render.mjs --sheet=2.25,4.27,8.25,13.3,15.25,18.25,20.03,25.27,30.25,34.25,36.25,40.25,44.25,48.25,54.25 --cols=5 --w=384 --out=review/sheet-transitions.jpg --soft-gl",
+    "stills": "node render.mjs --stills=7.4,12.2,14.5,28.8 --out=review/stills --soft-gl",
+    "frames": "node render.mjs --frames --workers=4 --fps=24 --soft-gl",
+    "score": "node music/score.mjs",
+    "encode": "${FFMPEG:-ffmpeg} -y -loglevel error -framerate 24 -i out/frames/f%05d.jpg -i assets/score.m4a -map 0:v -map 1:a -c:v libx264 -preset medium -crf 25 -pix_fmt yuv420p -c:a aac -b:a 160k -shortest -movflags +faststart MOSES-EXODUS-60s.mp4"
+  },
+  "dependencies": {
+    "puppeteer-core": "^25.11.0",
+    "three": "0.160.0"
+  }
+}

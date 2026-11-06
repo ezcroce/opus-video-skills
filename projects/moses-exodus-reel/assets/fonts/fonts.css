@@ -1,0 +1,33 @@
+/* Local, offline copies of the four display families the kinetic-reel look needs.
+   Sources: @fontsource packages (SIL OFL / Apache), copied at scaffold time so
+   the reel never depends on fonts.googleapis.com (or any network at all). */
+@font-face {
+  font-family: 'Anton'; font-style: normal; font-weight: 400; font-display: block;
+  src: url('./anton-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Archivo Black'; font-style: normal; font-weight: 400; font-display: block;
+  src: url('./archivo-black-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Instrument Serif'; font-style: normal; font-weight: 400; font-display: block;
+  src: url('./instrument-serif-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Instrument Serif'; font-style: italic; font-weight: 400; font-display: block;
+  src: url('./instrument-serif-latin-400-italic.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono'; font-style: normal; font-weight: 400; font-display: block;
+  src: url('./jetbrains-mono-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono'; font-style: normal; font-weight: 500; font-display: block;
+  src: url('./jetbrains-mono-latin-500-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono'; font-style: normal; font-weight: 700; font-display: block;
+  src: url('./jetbrains-mono-latin-700-normal.woff2') format('woff2');
+}
+/* "Noto Sans SC" is intentionally NOT shipped: this reel is Italian/English only.
+   F.zh is aliased to the mono family in reel.js and used for micro-annotations. */
