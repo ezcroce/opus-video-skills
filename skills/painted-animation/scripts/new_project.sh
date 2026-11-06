@@ -8,7 +8,8 @@ KEEP_DEMO="${2:-}"
 
 if [ -e "$TARGET/studio.html" ]; then echo "error: $TARGET already has a studio.html; not overwriting" >&2; exit 1; fi
 mkdir -p "$TARGET"
-rsync -a "$SKILL_DIR/template/" "$TARGET/"
+# rsync is not installed on every machine (e.g. minimal Linux sandboxes); cp -a is an equivalent copy.
+if command -v rsync >/dev/null 2>&1; then rsync -a "$SKILL_DIR/template/" "$TARGET/"; else cp -a "$SKILL_DIR/template/." "$TARGET/"; fi
 mkdir -p "$TARGET/assets" "$TARGET/out/check"
 
 # The demo is an example, not a template: unless asked, unhook it so the new video starts clean.

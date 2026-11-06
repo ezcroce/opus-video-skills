@@ -72,6 +72,12 @@ Describe the video in Claude Code. The matching skill is selected automatically,
 
 Each skill scaffolds a project, presents a storyboard, builds and reviews every shot, and writes the finished MP4 to the project's `out/` directory.
 
+## In-repo example
+
+[projects/opus-video-skills-reel/](projects/opus-video-skills-reel/) is an 18-second reel **about this repository**, made with `kinetic-reel`: storyboard, `cues.js`, nine shots, a synthesized beat-locked score, review sheets and the finished MP4 (plus a browser watch page with HTTP Range support). It is fully offline — the four display fonts are local copies instead of Google Fonts — and documents how to re-render it.
+
+The scaffold scripts also tolerate machines without `rsync` (`cp -a` fallback), and `render.mjs` accepts an `FFMPEG` environment variable so a static ffmpeg binary can be used when none is on `PATH`.
+
 ## Repository Structure
 
 | Path | Description |
@@ -79,6 +85,7 @@ Each skill scaffolds a project, presents a storyboard, builds and reviews every 
 | `.claude-plugin/marketplace.json` | Plugin marketplace manifest (one plugin per skill) |
 | `skills/painted-animation/` | Watercolour animation skill: engine, guides, examples |
 | `skills/kinetic-reel/` | Kinetic-typography reel skill: engine, guides, examples |
+| `projects/opus-video-skills-reel/` | Worked 18 s reel built with `kinetic-reel`, including the finished MP4 |
 
 ## Adding a Style
 

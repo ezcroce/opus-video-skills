@@ -6,7 +6,8 @@ SKILL_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 TARGET="${1:?usage: new_project.sh <target-dir>}"
 if [ -e "$TARGET/reel/reel.js" ]; then echo "error: $TARGET already has reel/reel.js; not overwriting" >&2; exit 1; fi
 mkdir -p "$TARGET"
-rsync -a "$SKILL_DIR/template/" "$TARGET/"
+# rsync is not installed on every machine (e.g. minimal Linux sandboxes); cp -a is an equivalent copy.
+if command -v rsync >/dev/null 2>&1; then rsync -a "$SKILL_DIR/template/" "$TARGET/"; else cp -a "$SKILL_DIR/template/." "$TARGET/"; fi
 mkdir -p "$TARGET/out/check" "$TARGET/assets"
 cd "$TARGET"
 echo "== installing puppeteer-core, three"
