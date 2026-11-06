@@ -12,10 +12,17 @@ const flag = (n) => args.includes(`--${n}`);
 const val = (n, d) => { const a = args.find(x => x.startsWith(`--${n}=`)); return a ? a.split('=').slice(1).join('=') : d; };
 
 const scriptPath = val('script', 'script.md');
+const manPath = val('manifest', 'segments.json');
+if (!existsSync(scriptPath)) { console.error(`error: cannot read ${scriptPath}`); process.exit(1); }
+if (!existsSync(manPath)) {
+  console.error(`error: ${manPath} not found.\n  run \`node tts.mjs\` to synthesize, or \`node tts.mjs --manifest\` to hand the text to an external TTS,\n  then \`node tts.mjs --finalize\` to measure the audio; then come back here.`);
+  process.exit(1);
+}
 const { front, blocks } = parseScript(readFileSync(scriptPath, 'utf8'));
-const man = JSON.parse(readFileSync(val('manifest', 'segments.json'), 'utf8'));
+const man = JSON.parse(readFileSync(manPath, 'utf8'));
 const segments = man.segments || [];
 if (!segments.length) { console.error('error: segments.json has no segments — run `node tts.mjs --finalize` first'); process.exit(1); }
+for (const s of segments) if (!existsSync(s.file)) { console.error(`error: missing audio for ${s.block}: ${s.file}`); process.exit(1); }
 
 const gapBetween = Number(val('gap', DEFAULT_GAP));
 const out = val('out', `out/${front.slug || 'episode'}.mp3`);
