@@ -1,0 +1,18 @@
+{
+  "name": "podcast-episode",
+  "private": true,
+  "type": "module",
+  "description": "One podcast episode: script.md → clips → master.wav, cover and review player. No dependencies, Node 18+.",
+  "scripts": {
+    "lines": "node lib/lines.mjs",
+    "pending": "node lib/lines.mjs --json",
+    "stats": "node lib/lines.mjs --stats",
+    "build": "node lib/build.mjs",
+    "check": "node lib/build.mjs --check",
+    "player": "node lib/player.mjs",
+    "cover": "node lib/poster.mjs",
+    "mp3": "node lib/export.mjs",
+    "import": "node lib/import-audio.mjs",
+    "music": "node lib/synth.mjs --kind=bed --out=assets/music/bed.wav"
+  }
+}

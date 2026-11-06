@@ -5,7 +5,7 @@
     "name": "tuzhechen2005"
   },
   "metadata": {
-    "description": "Video-making skills for Claude Opus 5.5 in Claude Code: every frame and every note generated in code, one skill per visual style."
+    "description": "Video- and audio-making skills for Claude Opus 5.5 in Claude Code: every frame, every note and every sound generated in code, one skill per medium and style."
   },
   "plugins": [
     {
@@ -27,6 +27,16 @@
       "category": "design",
       "keywords": ["motion-graphics", "kinetic-typography", "showreel", "threejs", "webgl"],
       "homepage": "https://github.com/tuzhechen2005/opus-video-skills/tree/main/skills/kinetic-reel"
+    },
+    {
+      "name": "podcast-studio",
+      "description": "Complete podcast episodes from a Markdown script: line-per-turn scripts with stable clip ids, per-line speech, chapter beats, a generated sting and music bed, a mastered WAV plus chapter-marked MP3, cover art and a review player.",
+      "source": "./",
+      "strict": false,
+      "skills": ["./skills/podcast-studio"],
+      "category": "audio",
+      "keywords": ["podcast", "audio", "voice", "mixing", "mastering"],
+      "homepage": "https://github.com/tuzhechen2005/opus-video-skills/tree/main/skills/podcast-studio"
     }
   ]
 }

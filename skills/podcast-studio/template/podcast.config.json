@@ -1,0 +1,17 @@
+{
+  "episode": "ep-01",
+  "script": "script.md",
+  "rate": 44100,
+  "gap": 0.22,
+  "paragraphGap": 0.55,
+  "pad": 0.35,
+  "beats": { "open": 2.4, "chapter": 1.6, "close": 3.2 },
+  "voiceGain": 0.92,
+  "truePeakDb": 1.5,
+  "ceiling": 0.94,
+  "charsPerSecond": 14,
+  "clipDir": "assets/voice",
+  "sting": "assets/stingers/sting.wav",
+  "tag": "assets/stingers/tag.wav",
+  "music": { "enabled": true, "file": "assets/music/bed.wav", "bpm": 100, "gain": 0.16 }
+}
