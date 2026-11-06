@@ -1,0 +1,15 @@
+{
+  "name": "podqa-01-video",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Illustrated video for PodQAst Inteligente #01 — painted-animation method on a headless Skia canvas (no Chrome in this sandbox)",
+  "scripts": {
+    "cues": "node align.mjs",
+    "sheet": "node render.mjs --sheet=4,14,30 --cols=3 --w=620 --out=out/check/sheet.jpg",
+    "video": "node render.mjs --audio=../episodes/podqa-01.mp3 --out=out/podqa-01.mp4"
+  },
+  "dependencies": {
+    "@napi-rs/canvas": "^0.1.80"
+  }
+}

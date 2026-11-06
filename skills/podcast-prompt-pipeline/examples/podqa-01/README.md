@@ -10,6 +10,7 @@ A worked episode of the pipeline, reproducing the show from [Vivian Lima's `prom
 | Language | pt-BR |
 | Script | 523 words → 3:46 estimated at 140 wpm |
 | Master | 3:17 · −16.0 LUFS measured · mono 44.1 kHz 192 kbps · shipped in `episodes/podqa-01.mp3` |
+| Video | 3:17 · 1920×1080 24 fps · painted by [`podqa-01-video`](../../../../podqa-01-video/) · `episodes/podqa-01.mp4` |
 | Blocks | ABERTURA · CURIOSIDADE 1 · CURIOSIDADE 2 · FINALIZAÇÃO |
 
 ## What is here
@@ -33,11 +34,14 @@ A worked episode of the pipeline, reproducing the show from [Vivian Lima's `prom
 3:17  episodes/podqa-01.mp3   speech 3:14 (98%)   4 segments
 I: -16.0 LUFS   LRA: 4.0 LU   peaks -2.6 to -4.0 dBFS per block, no clipping
 
-0:00  ABERTURA
-0:37  CURIOSIDADE 1 — O erro invisível
-1:47  CURIOSIDADE 2 — Uma ferramenta de IA para testar
-2:52  FINALIZAÇÃO
+0:02  ABERTURA
+0:39  CURIOSIDADE 1 — O erro invisível
+1:49  CURIOSIDADE 2 — Uma ferramenta de IA para testar
+2:54  FINALIZAÇÃO
 ```
+
+Chapters start after the 2.1 s signature and its gap, so they match what the listener hears; an
+earlier build of this file started them at 0:00 and ran 2.3 s early throughout.
 
 The estimate said 3:46 and the delivered speech measured 160 words per minute against the estimator's 140 — a 14 % miss in the safe direction, since it read the script as slower than the voice did. When the number matters, trust `segments.json` after `--finalize`, not the estimate. The script is the reproducible part; `segments/` stays ignored, and one master is committed at `episodes/podqa-01.mp3` so the episode can be heard without a TTS key.
 

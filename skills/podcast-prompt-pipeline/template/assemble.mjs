@@ -101,13 +101,18 @@ await run(FFMPEG, ['-hide_banner', '-loglevel', 'error', '-y', ...inputs,
 
 // ---- chapters -------------------------------------------------------------
 const total = await duration(out);
-let t = 0;
+// Chapter times must start where the audio starts: the sting and its gap come before block 1.
+let t = flag('sting') ? (await duration('out/tmp/sting.wav')) + 0.25 : 0;
+const lead = t;
 const lines = [];
 for (const b of blocks) {
   const segs = segments.filter(s => s.block === b.id);
   const dur = segs.reduce((a, s) => a + (s.duration || 0), 0) + Math.max(0, segs.length - 1) * (gapBetween);
   lines.push(`${fmt(t)}  ${b.display}${b.label.includes('—') ? ' — ' + b.label.split('—').slice(1).join('—').trim() : ''}`);
   t += dur + (b === blocks[0] ? OPENING_GAP : gapBetween);
+}
+if (Math.abs(t - lead - total) > 1.5) {
+  console.log(`! chapters end at ${fmt(t)} but the master is ${fmt(total)} — check gaps and sting`);
 }
 const chapters = `# ${front.title}\n${lines.join('\n')}\n`;
 writeFileSync(out.replace(/\.mp3$/, '.chapters.txt'), chapters);
