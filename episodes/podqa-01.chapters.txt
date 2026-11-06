@@ -1,0 +1,5 @@
+# PodQAst Inteligente #01 — O bug que ninguém viu
+0:00  ABERTURA
+0:37  CURIOSIDADE 1 — O erro invisível
+1:47  CURIOSIDADE 2 — Uma ferramenta de IA para testar
+2:52  FINALIZAÇÃO

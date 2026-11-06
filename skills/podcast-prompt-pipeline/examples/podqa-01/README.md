@@ -9,7 +9,7 @@ A worked episode of the pipeline, reproducing the show from [Vivian Lima's `prom
 | Host | Vivi (single host, as in the original prompt) |
 | Language | pt-BR |
 | Script | 523 words → 3:46 estimated at 140 wpm |
-| Master | 3:20 · −16.0 LUFS measured · mono 44.1 kHz 192 kbps |
+| Master | 3:17 · −16.0 LUFS measured · mono 44.1 kHz 192 kbps · shipped in `episodes/podqa-01.mp3` |
 | Blocks | ABERTURA · CURIOSIDADE 1 · CURIOSIDADE 2 · FINALIZAÇÃO |
 
 ## What is here
@@ -25,21 +25,21 @@ A worked episode of the pipeline, reproducing the show from [Vivian Lima's `prom
 1. **Prompts.** The title prompt and the script prompt from [references/prompts.pt-BR.md](../../references/prompts.pt-BR.md), retargeted to the two promise points in `brief.md`: an invisible QA failure, and an AI tool a listener could try this week.
 2. **Script.** Written directly into the four blocks. The negative rules from the original prompt were kept: no jargon without a gloss, and under five minutes. The estimate came in at 3:46 against a 4:10 target, so nothing had to be cut.
 3. **Validation.** `node check_script.mjs` → 0 errors, 0 warnings. No bare digits, no all-caps abbreviations, no markdown inside speech, sentences under 20 words, fixed sign-off present.
-4. **Voice and master.** Four blocks synthesized separately (35.6 s, 67.8 s, 70.0 s, 22.7 s of speech), then `assemble.mjs`: 0.35 s gaps (0.7 s after the opening), a 2.1 s procedural three-note sting at the head, EBU R128 to −16 LUFS, mono 44.1 kHz 192 kbps MP3.
+4. **Voice and master.** Four blocks synthesized separately (36.4 s, 69.7 s, 64.6 s, 22.9 s of speech), then `assemble.mjs`: 0.35 s gaps (0.7 s after the opening), a 2.1 s procedural three-note sting at the head, EBU R128 to −16 LUFS, mono 44.1 kHz 192 kbps MP3.
 
 ## Result
 
 ```
-3:20  episodes/podqa-01.mp3   speech 3:16 (98%)   4 segments
+3:17  episodes/podqa-01.mp3   speech 3:14 (98%)   4 segments
 I: -16.0 LUFS   LRA: 4.0 LU   peaks -2.6 to -4.0 dBFS per block, no clipping
 
 0:00  ABERTURA
-0:36  CURIOSIDADE 1 — O erro invisível
-1:44  CURIOSIDADE 2 — Uma ferramenta de IA para testar
-2:55  FINALIZAÇÃO
+0:37  CURIOSIDADE 1 — O erro invisível
+1:47  CURIOSIDADE 2 — Uma ferramenta de IA para testar
+2:52  FINALIZAÇÃO
 ```
 
-The estimate said 3:46 and the delivered speech measured 160 words per minute against the estimator's 140 — a 14 % miss in the safe direction, since it read the script as slower than the voice did. When the number matters, trust `segments.json` after `--finalize`, not the estimate. The audio is generated per machine and is not committed; `episodes/` and `segments/` are ignored.
+The estimate said 3:46 and the delivered speech measured 160 words per minute against the estimator's 140 — a 14 % miss in the safe direction, since it read the script as slower than the voice did. When the number matters, trust `segments.json` after `--finalize`, not the estimate. The script is the reproducible part; `segments/` stays ignored, and one master is committed at `episodes/podqa-01.mp3` so the episode can be heard without a TTS key.
 
 ## Content
 

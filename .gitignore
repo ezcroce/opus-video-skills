@@ -7,4 +7,6 @@ __pycache__/
 # podcast pipeline artefacts: generated audio, masters and manifests
 segments/
 segments.json
-episodes/
+episodes/*
+!episodes/podqa-01.mp3
+!episodes/podqa-01.chapters.txt
