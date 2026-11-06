@@ -7,7 +7,9 @@ description: Make kinetic-typography motion reels (MP4) in code: showreels, port
 
 A method for making editorial, high-energy motion reels entirely in code, distilled from "Work Reel ’26" (an 84 s
 portfolio reel: Microsoft → UW–Madison Surgery → Enterprise RAG → trace finale). It's bundled as a runnable
-`template/` (a 17 s demo that uses every technique) and a full worked example in `examples/work-reel-26/`.
+`template/` (a 17 s demo that uses every technique) and two worked examples: `examples/work-reel-26/` (84 s, three
+chapters, WebGL) and `examples/mose-venezia/` (62 s, Italian, voice-over, canvas-only scenes timed to the measured
+clips — read this one first if the reel is short or narrated).
 
 **How it works.** Every frame is a pure function of `t`. `reel/index.html` loads `reel/cues.js` (the timeline) and
 `reel/reel.js` (an ES module: three.js layers, a 2D type canvas and a WebGL post pass). `render.mjs` drives headless

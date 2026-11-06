@@ -40,6 +40,15 @@ An 84-second portfolio reel for an AI engineer. The time budget follows the orde
 
 The source is in [examples/work-reel-26](examples/work-reel-26/), and the entry page in [examples/site-intro](examples/site-intro/).
 
+## Example: MOSE — Venezia
+
+<p align="center"><img src="docs/mose-gates.png" width="720" alt="the gates rising"></p>
+
+A 62-second Italian explainer about the MOSE flood barrier, with a narration synthesised line by line and a score
+written against the same timeline. It shows the shorter form: seven shots, one gold ground, procedural section
+drawings instead of three.js, and subtitles timed from the measured voice clips. Source and notes in
+[examples/mose-venezia](examples/mose-venezia/).
+
 ## Requirements
 
 - Claude Code with Claude Opus 5.5
@@ -72,6 +81,7 @@ The skill can also be invoked directly with `/kinetic-reel`. It scaffolds a proj
 | `references/style-guide.md` | Palette, typography, layout grid, motion helpers, GL layers, transition catalogue |
 | `references/sound.md` | Synthesizer, transition sound rules, arrangement, known pitfalls |
 | `examples/work-reel-26/` | Full source of the 84-second example |
+| `examples/mose-venezia/` | A 62-second Italian explainer with voice-over: canvas-only scenes, clips, mix |
 | `examples/site-intro/` | The reel as a website entry page, with a Cloudflare Worker for HTTP Range |
 
 ## License
