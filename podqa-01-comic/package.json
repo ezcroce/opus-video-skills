@@ -1,0 +1,13 @@
+{
+  "name": "podqa-01-comic",
+  "private": true,
+  "type": "module",
+  "description": "Comic-book cut of PodQAst Inteligente #01 — flat ink, halftone, balloons",
+  "scripts": {
+    "sheet": "node render.mjs --sheet=2,6,12 --cols=3 --out=out/check/sheet.jpg",
+    "render": "node render.mjs --fps=24 --to=44.57 --audio=out/extract.mp3 --out=out/extract.mp4"
+  },
+  "dependencies": {
+    "@napi-rs/canvas": "^0.1.60"
+  }
+}

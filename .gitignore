@@ -10,4 +10,5 @@ segments.json
 episodes/*
 !episodes/podqa-01.mp3
 !episodes/podqa-01.mp4
+!episodes/podqa-01-comic.mp4
 !episodes/podqa-01.chapters.txt
