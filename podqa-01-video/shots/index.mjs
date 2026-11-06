@@ -18,9 +18,13 @@ const cam = (t, keys) => ({ cx: kf(t, keys.cx || [[0, W / 2]]), cy: kf(t, keys.c
 function studio(ctx, t, o = {}) {
   const { lit = 1, dim = 0 } = o;
   // value first: a deep warm wall, so a cream character has something to sit against
-  paint(ctx, rectPts(-200, -200, W + 400, H + 400), { wash: PAL.ochre, alpha: .20, edge: false, key: 'wall' });
-  paint(ctx, rectPts(-200, -200, W + 400, 620), { wash: PAL.terracotta, alpha: .10, edge: false, key: 'walltop' });
-  paint(ctx, blobPts(430, 430, 620, 6, .10, 30), { wash: PAL.lamp, alpha: .18 * lit, edge: false, key: 'wallpool' });
+  // the wall: a warm upper field, a deeper lower field, and one lamp pool — three values, no gradient
+  paint(ctx, rectPts(-200, -200, W + 400, H + 400), { wash: PAL.sand, alpha: .30, edge: false, key: 'wall' });
+  paint(ctx, rectPts(-200, -200, W + 400, 560), { wash: PAL.ochre, alpha: .11, edge: false, key: 'walltop' });
+  paint(ctx, rectPts(-200, 560, W + 400, 220), { wash: PAL.terracotta, alpha: .09, edge: false, key: 'wainscot' });
+  paint(ctx, rectPts(-200, 690, W + 400, 120), { wash: PAL.dusk, alpha: .07, edge: false, key: 'wallshadow' });
+  ink(ctx, [[-200, 566], [400, 560], [1200, 568], [2100, 558]], { w: 2.0, col: hexA(PAL.inkSoft, .35), key: 'wainline' });
+  paint(ctx, blobPts(430, 420, 560, 6, .10, 30), { wash: PAL.lamp, alpha: .16 * lit, edge: false, key: 'wallpool' });
   // shelf and plant live high on the wall, clear of the cast
   paint(ctx, rectPts(150, 250, 320, 13, 2), { wash: PAL.inkSoft, alpha: .30, ink: PAL.ink, sw: 1.8, key: 'shelf' });
   for (let i = 0; i < 3; i++) paint(ctx, rrPts(188 + i * 72, 190 + (i % 2) * 8, 42, 60 - (i % 2) * 12, 6, 1.5), { wash: [PAL.terracotta, PAL.sea, PAL.ochre][i], alpha: .30, ink: PAL.ink, sw: 1.7, key: 'book' + i });
@@ -570,7 +574,7 @@ const SHOTS = [
   { // "Escolhe uma parte do sistema e pergunta em voz alta... Eu sou a Vivi e esse foi o Podcast Inteligente."
     id: 'd2-signoff', start: 182.66, end: 197.40,
     draw(ctx, lt, t) {
-      const z = lerp(1.05, 1.32, ease(seg(lt, 0, 14.7)));
+      const z = lerp(1.04, 1.18, ease(seg(lt, 0, 14.7)));
       withCam(ctx, cam(lt, { cx: [[0, 900], [14.7, 940]], cy: [[0, 610], [14.7, 560]], z: [[0, z]] }), () => {
         const dim = .55 * ease(seg(lt, 11.4, 14.4));
         studio(ctx, t, { lit: 1 - .55 * seg(lt, 11.4, 14.4), dim, lampSwing: 0 });

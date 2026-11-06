@@ -13,6 +13,16 @@ engine is a Node/Skia port of the skill's p5.brush core (see `README.md` — thi
 **World.** One warm room with a lamp, a microphone, a table and a plant; deep dusk for space. The room is
 the film's resting place: every time the story leaves it, it comes back to it.
 
+**Cast.** Vivi is drawn as an adult: long neck and shoulders, coat and collar, a scarf with a knot
+and a tail, arms that go shoulder → elbow → hand instead of ribbons. The face is graphic ink — one
+heavy lid line, almond eyes, no nose stroke, a two-band mouth — because eyebrows, big irises and a
+rounded head read as a child at 40 px wide.
+
+**Lip sync.** The mouth follows `envelope.json`, measured from the episode audio, not a timer: two
+bands that part on voiced frames and pull sideways on sibilants, with a small warm interior that never
+grows past `0.14u` so it does not read as a hole. Every other motion — blinks, breathing, lean, the
+lamp, the smoke — is a continuous function of time with eased sine terms, so nothing snaps.
+
 **Motifs.** The single ink line (the "one-line change") becomes the rail, the crack and the torn scroll.
 The rocket and the sketchbook appear in the promise and come back in the sign-off — the closing image
 rhymes with the opening one.

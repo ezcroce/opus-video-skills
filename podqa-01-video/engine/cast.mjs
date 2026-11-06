@@ -3,163 +3,253 @@
 // without redrawing it.
 import {
   PAL, TAU, paint, ink, glow, hexA, hash, lerp, clamp, ease, kf, wob,
-  ellPts, rectPts, rrPts, blobPts, arcPts, through, ribbonPts, rng,
+  ellPts, rectPts, rrPts, blobPts, arcPts, through, ribbonPts, rng, VOICE, darken, clipTo,
 } from './core.mjs';
 
 // ------------------------------------------------------------------ Vivi --
-// The host: a soft cream body with an ochre scarf, ink eyes that act, arms that gesture.
-// Drawn from a single scale unit so the same body reads in a wide shot and in a close-up.
+// The host, drawn with adult proportions: a head that is a head, shoulders, a jacket, hair that frames
+// the face, and a mouth with two lips driven by the measured speech envelope.
+// Unit u is the head radius; the whole figure is about 9u tall and 4u wide at the shoulders.
+
+const blinkCurve = (t, key) => {
+  const period = 3.2 + hash(key.length * 3.7) * 1.9;
+  const ph = (((t + hash(key.charCodeAt(0) || 5) * period) % period) + period) % period / period;
+  if (ph > .962) { const k = Math.sin((ph - .962) / .038 * Math.PI); return k; }
+  return 0;
+};
+
+function eyeShapes(ctx, cx, cy, u, o = {}) {
+  const { open = 1, look = 0, mood = 'idle', key = 'eye' } = o;
+  const lw = u / 40;
+  const w = .255 * u, h = .098 * u * Math.max(.06, open);
+  const ix = cx + look * .06 * u, iy = cy + (open < .4 ? 0 : .006 * u);
+
+  // A narrow almond: cream sclera, warm iris, a heavy lash on the upper lid. The almond stays flat
+  // and pointed at the outer corner so the face reads as an adult's, not a doll's.
+  // the lid runs left to right, the lower lid right to left: one closed loop, no reversal spike
+  const lid = [], low = [];
+  for (let i = 0; i <= 14; i++) {
+    const k = i / 14, a2 = Math.PI * k;
+    // pointed corners: the sine is raised to .78 so the ends come together more sharply
+    const sx = Math.cos(a2), sy = Math.pow(Math.sin(a2), .78);
+    lid.push([cx + sx * w, cy - sy * h * 1.25 - (1 - k) * .012 * u]);
+  }
+  for (let i = 14; i >= 0; i--) {
+    const k = i / 14, a2 = Math.PI * k;
+    const sx = Math.cos(a2), sy = Math.pow(Math.sin(a2), .78);
+    low.push([cx + sx * w, cy + sy * h * .82]);
+  }
+  const shape = [...lid, ...low];
+  paint(ctx, shape, { wash: PAL.cream, alpha: .46, edge: false, key: key + 'scl' });
+
+  ctx.save();
+  ctx.beginPath();
+  shape.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y));
+  ctx.closePath();
+  ctx.clip();
+  // iris: a warm disc, not a black dot; it sits high in the almond so some sclera shows below
+  paint(ctx, ellPts(ix, iy - .012 * u, .088 * u, .092 * u, 18), { wash: darken(PAL.terracotta, .18), alpha: .82, edge: false, key: key + 'iris' });
+  paint(ctx, ellPts(ix, iy - .006 * u, .036 * u, .038 * u, 12), { wash: PAL.ink, alpha: .72, edge: false, key: key + 'pup' });
+  paint(ctx, ellPts(ix - .028 * u, iy - .046 * u, .026 * u, .026 * u, 10), { wash: PAL.cream, alpha: .85, edge: false, key: key + 'hl' });
+  ctx.restore();
+
+  // upper lid: the heaviest line in the face, thickening towards the outer corner
+  ink(ctx, lid, { w: 2.1 * lw, col: PAL.ink, key: key + 'lid' });
+  ink(ctx, lid.slice(0, 4), { w: 3.4 * lw, col: PAL.ink, op: .85, key: key + 'lash' });
+  // lower lid: soft, and only on the inner half, so the eye is not ringed
+  ink(ctx, low.slice(1, 8), { w: 1.1 * lw, col: PAL.inkSoft, op: .34, key: key + 'low' });
+  // crease: a short stroke above the lid, keeps the eye from floating
+  ink(ctx, through([[cx - w * .78, cy - h * 1.62], [cx - w * .1, cy - h * 1.92], [cx + w * .62, cy - h * 1.66]], 4),
+    { w: 1.0 * lw, col: PAL.inkSoft, op: .40, key: key + 'cr' });
+
+  if (mood === 'squint') ink(ctx, [[cx - w * 1.04, cy - h * .1], [cx + w * 1.04, cy - h * .1]], { w: 2.4 * lw, key: key + 'sq' });
+  else if (mood === 'happy') ink(ctx, arcPts(cx, cy + h * 1.1, w * .92, Math.PI * 1.1, Math.PI * 1.9, 12), { w: 2.6 * lw, key: key + 'hp' });
+
+  // brow: low, short, nearly straight — a high arch reads as worry
+  const by = cy - .30 * u + (mood === 'surprise' ? -.05 * u : 0);
+  ink(ctx, through([[cx - .24 * u, by + .012 * u], [cx - .04 * u, by - .026 * u], [cx + .23 * u, by - .004 * u]], 5),
+    { w: 2.0 * lw, col: PAL.hair, op: .85, key: key + 'brw' });
+}
+
+// Lips, restrained: one ink bow for the upper lip, one soft wash for the lower, and a small dark
+// interior that only appears when the voice is actually open. At talk speed this reads as speech.
+function lips(ctx, cx, cy, u, o = {}) {
+  const { open = 0, spread = .5, mood = 'idle', key = 'lips' } = o;
+  const lw = u / 40;
+  const w = (.225 + .075 * spread) * u;
+  const gap = Math.min(.13 * u, Math.pow(Math.max(0, open), 1.6) * .21 * u);
+  const smile = mood === 'happy' ? -.035 * u : mood === 'sad' ? .03 * u : 0;
+
+  // lower lip
+  paint(ctx, through([[cx - w, cy + smile], [cx - w * .46, cy + .07 * u + smile * .6], [cx, cy + .095 * u + smile * .7],
+                      [cx + w * .46, cy + .07 * u + smile * .6], [cx + w, cy + smile]], 5),
+    { wash: PAL.rose, alpha: .34, edge: false, key: key + 'low' });
+  // interior: a lens, small, warm — never a black hole
+  if (gap > .010) {
+    paint(ctx, through([[cx - w * .78, cy + smile * .6], [cx, cy - gap * .30], [cx + w * .78, cy + smile * .6],
+                        [cx + w * .58, cy + gap * .84], [cx, cy + gap], [cx - w * .58, cy + gap * .84]], 5),
+      { wash: PAL.rust, alpha: .42, edge: false, key: key + 'in' });
+  }
+  // the upper lip: a single line with a cupid's bow, the cleanest read at any size
+  ink(ctx, through([[cx - w, cy + smile], [cx - w * .40, cy - .022 * u - gap * .20 + smile * .5], [cx, cy - .040 * u - gap * .26],
+                    [cx + w * .40, cy - .022 * u - gap * .20 + smile * .5], [cx + w, cy + smile]], 4),
+    { w: 2.0 * lw, key: key + 'up' });
+  if (gap > .010) ink(ctx, through([[cx - w * .60, cy + gap * .82], [cx, cy + gap * .94], [cx + w * .60, cy + gap * .82]], 4),
+    { w: 1.0 * lw, col: PAL.inkSoft, op: .5, key: key + 'lowline' });
+}
+
 export function vivi(ctx, o = {}) {
   const {
     x = 0, y = 0, u = 40, t = 0, mood = 'idle', look = 0, lean = 0,
-    armL = .12, armR = .12, blink = 0, squash = 1, seedKey = 'vivi', scarf = true,
+    armL = .10, armR = .10, seedKey = 'vivi', open = null, spread = null, mouthOpen = null,
   } = o;
-  const sk = seedKey;
-  const lw = u / 40;
+  const sk = seedKey, lw = u / 40;
+
+  const voiceOpen = clamp(open ?? mouthOpen ?? (VOICE && VOICE.open) ?? 0);
+  const voiceSpread = clamp(spread ?? (VOICE && VOICE.spread) ?? .5);
+  const talking = mood === 'talk';
+  const blink = blinkCurve(t, sk + mood);
+  const swayA = Math.sin(t * .77) * .014;             // she never quite stops moving
+  const breath = 1 + Math.sin(t * 1.45 + .3) * .006;
+
   ctx.save();
   ctx.translate(x, y);
-  ctx.rotate(lean);
+  ctx.rotate(lean + swayA * .5);
 
-  const breathe = 1 + Math.sin(t * 1.7 + .4) * .008;
+  // ---- hair, back mass: it falls behind the shoulders and never crosses the face
+  // (the outline starts and ends at the same point: a closing chord would draw a line across the shape)
+  paint(ctx, through([[0, 1.18 * u], [-1.02 * u, 1.12 * u], [-1.26 * u, .60 * u], [-1.16 * u, -.24 * u],
+                      [-1.24 * u, -1.04 * u], [-.78 * u, -1.50 * u], [0, -1.66 * u],
+                      [.78 * u, -1.50 * u], [1.24 * u, -1.04 * u], [1.16 * u, -.24 * u],
+                      [1.26 * u, .60 * u], [1.02 * u, 1.12 * u], [0, 1.18 * u]], 7),
+    { wash: PAL.hair, alpha: .56, ink: PAL.ink, sw: 2.0 * lw, key: sk + 'hairB' });
 
-  // shadow on the paper, not a drop shadow
-  paint(ctx, ellPts(.15 * u, 3.0 * u, 2.25 * u, .40 * u, 22), { wash: '#5B4A36', alpha: .13, edge: false, key: sk + 'sh' });
+  // ---- neck and shoulders: a real neck, a ribcage, a waist, so the body is not one slab
+  paint(ctx, through([[-.30 * u, .92 * u], [.30 * u, .92 * u], [.31 * u, 1.76 * u], [-.31 * u, 1.76 * u]], 3),
+    { wash: PAL.skin, alpha: .40, ink: PAL.inkSoft, sw: 1.3 * lw, key: sk + 'neck' });
+  paint(ctx, blobPts(0, 1.06 * u, .44 * u, 4, .14, 18), { wash: PAL.terracotta, alpha: .09, edge: false, key: sk + 'jawshadow' });
+  // collarbones: two short strokes, the cheapest way to say "an adult body"
+  for (const sx of [-1, 1]) ink(ctx, through([[sx * .12 * u, 1.62 * u], [sx * .34 * u, 1.58 * u], [sx * .52 * u, 1.64 * u]], 4),
+    { w: 1.2 * lw, col: PAL.inkSoft, op: .32, key: sk + 'clav' + sx });
 
-  // feet
-  for (const sx of [-1, 1]) {
-    paint(ctx, ellPts(sx * 1.0 * u, 2.72 * u, .60 * u, .34 * u, 18), { wash: PAL.cream, alpha: .30, ink: PAL.ink, sw: 2.0 * lw, key: sk + 'f' + sx });
-  }
+  paint(ctx, through([[0, 1.90 * u], [-1.14 * u, 1.72 * u], [-1.68 * u, 1.94 * u], [-1.34 * u, 3.40 * u],
+                      [-1.72 * u, 5.10 * u], [-1.90 * u, 6.9 * u], [1.90 * u, 6.9 * u], [1.72 * u, 5.10 * u],
+                      [1.34 * u, 3.40 * u], [1.68 * u, 1.94 * u], [1.14 * u, 1.72 * u], [0, 1.90 * u]], 5),
+    { wash: PAL.sea, alpha: .38, ink: PAL.ink, sw: 2.2 * lw, key: sk + 'coat' });
+  // collar: two strokes that make the shoulders read as a garment
+  ink(ctx, through([[-.70 * u, 1.80 * u], [0, 2.28 * u], [.70 * u, 1.80 * u]], 5), { w: 1.6 * lw, col: PAL.inkSoft, op: .7, key: sk + 'collar' });
+  // a belt breaks the mass and gives the eye a scale reference
+  paint(ctx, ribbonPts(through([[-1.38 * u, 3.30 * u], [-.4 * u, 3.44 * u], [.4 * u, 3.38 * u], [1.38 * u, 3.28 * u]], 7), .30 * u),
+    { wash: PAL.ochre, alpha: .34, ink: PAL.ink, sw: 1.7 * lw, key: sk + 'belt' });
+  paint(ctx, blobPts(1.04 * u, 3.44 * u, .17 * u, 4, .2, 14), { wash: PAL.ochre, alpha: .40, ink: PAL.ink, sw: 1.3 * lw, key: sk + 'knot' });
+  paint(ctx, ribbonPts(through([[1.10 * u, 3.50 * u], [1.30 * u, 4.10 * u], [1.06 * u, 4.42 * u]], 5), .16 * u, .09 * u),
+    { wash: PAL.ochre, alpha: .34, ink: PAL.ink, sw: 1.2 * lw, key: sk + 'knotTail' });
 
-  // body: an egg, a little wider at the bottom, breathing
-  const body = [];
-  const N = 34;
-  for (let i = 0; i < N; i++) {
-    const a = (i / N) * TAU;
-    const wobble = 1 + Math.sin(a * 3 + .6) * .018 + Math.sin(t * 1.2) * .005;
-    body.push([Math.cos(a) * 2.35 * u * (1 + .10 * Math.sin(a)) * wobble,
-               Math.sin(a) * 2.85 * u * squash * breathe]);
-  }
-  paint(ctx, body, { wash: PAL.cream, alpha: .34, ink: PAL.ink, sw: 2.6 * lw, key: sk + 'b' });
-  // value: a cooler wash low-right, a paper highlight upper-left (no gradients)
-  paint(ctx, blobPts(1.05 * u, 1.30 * u, 1.55 * u, 5, .14, 26), { wash: PAL.sky, alpha: .12, edge: false, key: sk + 'shd' });
-  paint(ctx, blobPts(-.85 * u, -1.35 * u, 1.10 * u, 4, .12, 22), { wash: PAL.paper, alpha: .16, edge: false, key: sk + 'hi' });
+  // ---- head
+  ctx.save();
+  ctx.translate(0, -.05 * u);
+  const head = through([[-1.00 * u, -.30 * u], [-.97 * u, -.96 * u], [-.62 * u, -1.26 * u], [-.20 * u, -1.36 * u],
+                        [.20 * u, -1.36 * u], [.62 * u, -1.26 * u], [.97 * u, -.96 * u], [1.00 * u, -.30 * u],
+                        [.94 * u, .34 * u], [.74 * u, .78 * u], [.34 * u, 1.02 * u], [0, 1.06 * u],
+                        [-.34 * u, 1.02 * u], [-.74 * u, .78 * u], [-.94 * u, .34 * u]], 6);
+  paint(ctx, head, { wash: PAL.skin, alpha: .44, ink: PAL.ink, sw: 2.3 * lw, key: sk + 'head' });
+  // blush and a jaw shade: two soft fields, no hard edges anywhere on the face
+  for (const sx of [-1, 1]) paint(ctx, blobPts(sx * .58 * u, .26 * u, .26 * u, 6, .1, 22), { wash: PAL.rose, alpha: .13, edge: false, key: sk + 'blush' + sx });
 
-  // scarf: a band across the body with a tail, the one saturated shape on her
-  if (scarf) {
-    const fl = Math.sin(t * 1.9) * .18;
-    // band around the middle, following the body's curve so it reads as worn, not pasted on
-    const band = [];
-    for (let i = 0; i <= 16; i++) {
-      const k = i / 16, a = Math.PI * (.06 + .88 * k);
-      band.push([Math.cos(a) * 2.42 * u, 1.42 * u + Math.sin(k * Math.PI) * .20 * u]);
-    }
-    paint(ctx, ribbonPts(through(band, 3), .52 * u), { wash: PAL.ochre, alpha: .34, ink: PAL.ink, sw: 1.9 * lw, key: sk + 'sc' });
-    paint(ctx, ribbonPts(through([[1.95 * u, 1.55 * u], [2.52 * u + fl * u, 2.05 * u], [2.28 * u - fl * u, 2.62 * u]], 7), .60 * u, .38 * u),
-      { wash: PAL.ochre, alpha: .34, ink: PAL.ink, sw: 1.7 * lw, key: sk + 'st' });
-  }
+  // ---- fringe: filled *inside* the head silhouette, so no hair line can cross the face
+  ctx.save();
+  clipTo(ctx, head);
+  const fringe = through([[-1.40 * u, -.86 * u], [-1.30 * u, -1.34 * u], [-.62 * u, -1.62 * u], [.30 * u, -1.62 * u],
+                          [1.10 * u, -1.36 * u], [1.40 * u, -.80 * u], [1.40 * u, .10 * u],
+                          [.96 * u, -.34 * u], [.42 * u, -.56 * u], [-.16 * u, -.62 * u], [-.72 * u, -.50 * u], [-1.40 * u, -.20 * u]], 6);
+  paint(ctx, fringe, { wash: PAL.hair, alpha: .58, edge: false, key: sk + 'fringe' });
+  // the hairline itself: one stroke, clipped with the fill
+  ink(ctx, through([[-1.06 * u, -.30 * u], [-.78 * u, -.50 * u], [-.20 * u, -.62 * u], [.40 * u, -.56 * u], [.90 * u, -.36 * u], [1.06 * u, -.16 * u]], 6),
+    { w: 2.0 * lw, key: sk + 'hairline' });
+  // parting and two strands inside the fringe: direction, so the hair is not a helmet
+  ink(ctx, through([[-.06 * u, -1.26 * u], [-.28 * u, -.86 * u], [-.44 * u, -.62 * u]], 5), { w: 1.1 * lw, col: PAL.inkSoft, op: .45, key: sk + 'part' });
+  ctx.restore();
 
-  // cheeks
-  for (const sx of [-1, 1]) paint(ctx, blobPts(sx * 1.30 * u, .42 * u, .44 * u, 4, .12, 16), { wash: PAL.rose, alpha: .18, edge: false, key: sk + 'ck' + sx });
+  // sheen on the hair: one pale band, no highlight gradient
+  paint(ctx, ribbonPts(through([[-.50 * u, -1.16 * u], [-.02 * u, -1.30 * u], [.40 * u, -1.14 * u]], 5), .10 * u), { wash: PAL.cream, alpha: .16, edge: false, key: sk + 'sheen' });
 
-  // ---- face
-  const ex = .92 * u, ey = -.62 * u;
-  const eyeKind = mood === 'squint' ? 'line' : mood === 'happy' ? 'arc' : 'dot';
-  for (const sx of [-1, 1]) {
-    const cx = sx * ex + look * .16 * u;
-    if (eyeKind === 'dot') {
-      const open = 1 - clamp(blink) * .85;
-      const er = (mood === 'surprise' ? 1.22 : 1) * .33 * u;
-      paint(ctx, ellPts(cx, ey, er, Math.max(.05 * u, er * open), 20), { wash: PAL.ink, alpha: .92, edge: false, key: sk + 'e' + sx });
-      if (open > .4) {
-        paint(ctx, ellPts(cx - er * .32, ey - er * .38, er * .28, er * .24 * open, 12), { wash: PAL.cream, alpha: .85, edge: false, key: sk + 'h' + sx });
-      }
-      // a brow only when the mood needs one
-      if (mood === 'sad') ink(ctx, [[cx - .30 * u, ey - .58 * u], [cx + .24 * u, ey - .74 * u]], { w: 2.4 * lw, key: sk + 'br' + sx });
-      if (mood === 'surprise') ink(ctx, arcPts(cx, ey - .48 * u, .30 * u, Math.PI * 1.2, Math.PI * 1.8, 8), { w: 2.2 * lw, key: sk + 'br' + sx });
-    } else if (eyeKind === 'arc') {
-      ink(ctx, arcPts(cx, ey + .12 * u, .32 * u, Math.PI * 1.12, Math.PI * 1.88, 12), { w: 3.0 * lw, key: sk + 'ea' + sx });
-    } else {
-      ink(ctx, [[cx - .32 * u, ey + .04 * u], [cx + .32 * u, ey - .04 * u]], { w: 3.0 * lw, key: sk + 'el' + sx });
-    }
-  }
+  // ---- rim light from the lamp: a single pale stroke, never a glow
+  ink(ctx, through([[-.98 * u, -.72 * u], [-1.02 * u, -.06 * u], [-.92 * u, .44 * u]], 5), { w: 1.5 * lw, col: PAL.cream, op: .22, key: sk + 'rim' });
+  ink(ctx, through([[-1.52 * u, 2.02 * u], [-1.34 * u, 2.90 * u]], 4), { w: 1.4 * lw, col: PAL.cream, op: .22, key: sk + 'rim2' });
 
-  // ---- mouth
-  const my = .58 * u;
-  if (mood === 'talk') {
-    const open = Math.abs(wob(t, 5.4)) * .13 + .04;
-    paint(ctx, ellPts(0, my, .26 * u, open * u + .07 * u, 16), { wash: PAL.rust, alpha: .55, ink: PAL.ink, sw: 1.5 * lw, key: sk + 'm' });
-  } else if (mood === 'happy') {
-    ink(ctx, arcPts(0, my - .12 * u, .38 * u, .3, Math.PI - .3, 12), { w: 2.8 * lw, key: sk + 'mh' });
-  } else if (mood === 'surprise') {
-    paint(ctx, ellPts(0, my, .17 * u, .21 * u, 14), { wash: PAL.rust, alpha: .55, ink: PAL.ink, sw: 1.5 * lw, key: sk + 'ms' });
-  } else if (mood === 'sad') {
-    ink(ctx, arcPts(0, my + .30 * u, .36 * u, Math.PI + .4, TAU - .4, 12), { w: 2.6 * lw, key: sk + 'md' });
-  } else if (mood === 'squint') {
-    ink(ctx, [[-.24 * u, my + .02 * u], [.24 * u, my - .02 * u]], { w: 2.6 * lw, key: sk + 'mq' });
-  } else {
-    ink(ctx, arcPts(0, my - .10 * u, .28 * u, .45, Math.PI - .45, 10), { w: 2.4 * lw, key: sk + 'mi' });
-  }
+  // ---- eyes, nose, mouth
+  const eyeOpen = mood === 'squint' ? .22 : mood === 'happy' ? .5 : mood === 'surprise' ? 1.2 : 1 - blink * .93;
+  eyeShapes(ctx, -.42 * u, -.22 * u, u, { open: eyeOpen, look, mood, key: sk + 'eL' });
+  eyeShapes(ctx, .42 * u, -.22 * u, u, { open: eyeOpen, look, mood, key: sk + 'eR' });
 
-  // ---- arms: angle 0 = hanging, 1.6 = out to the side, 2.6 = up
+  // nose: two soft dabs (tip and nostril shadow), no stroke
+  paint(ctx, blobPts(-.02 * u, .13 * u, .07 * u, 6, .08, 14), { wash: PAL.terracotta, alpha: .10, edge: false, key: sk + 'nose' });
+  paint(ctx, blobPts(0, .07 * u, .10 * u, 6, .08, 14), { wash: PAL.cream, alpha: .10, edge: false, key: sk + 'noseHl' });
+
+  const mOpen = talking ? Math.pow(voiceOpen, 1.35) * .92 : mood === 'surprise' ? .55 : mood === 'happy' ? .12 : 0;
+  lips(ctx, 0, .44 * u, u, { open: mOpen, spread: talking ? voiceSpread : .5, mood, key: sk + 'mouth' });
+  ctx.restore();
+
+  // ---- arms: shoulder, elbow, hand; a slow trailing motion so nothing snaps
   for (const [sx, ang] of [[-1, armL], [1, armR]]) {
-    const sh = [sx * 1.95 * u, .28 * u];
-    const L = 1.95 * u;
-    const hand = [sh[0] + sx * Math.sin(ang) * L, sh[1] + Math.cos(ang) * L * .92];
-    const elbow = [sh[0] + sx * Math.sin(ang * .55) * L * .62, sh[1] + Math.cos(ang * .55) * L * .56];
-    paint(ctx, ribbonPts(through([sh, elbow, hand], 5), .40 * u, .30 * u),
-      { wash: PAL.cream, alpha: .34, ink: PAL.ink, sw: 1.9 * lw, key: sk + 'a' + sx });
-    paint(ctx, ellPts(hand[0], hand[1], .36 * u, .34 * u, 16), { wash: PAL.cream, alpha: .42, ink: PAL.ink, sw: 2.0 * lw, key: sk + 'hn' + sx });
+    const sh = [sx * 1.56 * u, 1.96 * u];
+    const a = ang + Math.sin(t * .9 + (sx > 0 ? .4 : 1.9)) * .05;
+    const L1 = 1.5 * u, L2 = 1.35 * u;
+    const elbow = [sh[0] + sx * Math.sin(a * .62) * L1, sh[1] + Math.cos(a * .62) * L1];
+    const hand = [elbow[0] + sx * Math.sin(a * .96) * L2, elbow[1] + Math.cos(a * .96) * L2];
+    paint(ctx, ribbonPts(through([sh, elbow], 4), .46 * u, .38 * u), { wash: darken(PAL.sea, .30), alpha: .42, ink: PAL.ink, sw: 1.9 * lw, key: sk + 'ua' + sx });
+    paint(ctx, ribbonPts(through([elbow, hand], 4), .38 * u, .27 * u), { wash: PAL.skin, alpha: .40, ink: PAL.ink, sw: 1.8 * lw, key: sk + 'fa' + sx });
+    // hand: a mitten, elongated along the forearm, so it reads as a hand at 25 px
+    const dx = hand[0] - elbow[0], dy = hand[1] - elbow[1], L = Math.hypot(dx, dy) || 1;
+    const hang = Math.atan2(dy, dx);
+    paint(ctx, ellPts(hand[0] + dx / L * .10 * u, hand[1] + dy / L * .10 * u, .26 * u, .19 * u, 16, 0, hang),
+      { wash: PAL.skin, alpha: .46, ink: PAL.ink, sw: 1.7 * lw, key: sk + 'hd' + sx });
   }
   ctx.restore();
 }
 
 // ------------------------------------------------------------------- Bot --
-// The machine: a wind-up clay robot. Friendly, and completely confident about things it invents.
+// The machine: a slim brass-and-steel automaton with one lens, not a toy robot.
 export function bot(ctx, o = {}) {
   const { x = 0, y = 0, u = 40, t = 0, mood = 'idle', lean = 0, armL = .4, armR = .4, crank = 0, seedKey = 'bot', look = 0 } = o;
-  const sk = seedKey;
+  const sk = seedKey, lw = u / 40;
+  const sway = Math.sin(t * .63 + .9) * .012;
   ctx.save();
   ctx.translate(x, y);
-  ctx.rotate(lean);
-  paint(ctx, ellPts(0, 2.85 * u, 1.9 * u, .38 * u, 18), { wash: '#6B5A44', alpha: .05, edge: false, key: sk + 'sh' });
+  ctx.rotate(lean + sway);
 
-  // wheels
-  for (const sx of [-1, 1]) paint(ctx, ellPts(sx * .85 * u, 2.5 * u, .52 * u, .5 * u, 16), { wash: PAL.dusk, alpha: .2, ink: PAL.ink, sw: 1.6 * u / 40, key: sk + 'w' + sx });
+  // body: a tapered column with a chest plate
+  paint(ctx, through([[-1.10 * u, 1.30 * u], [-.95 * u, -.10 * u], [-1.05 * u, -.55 * u], [1.05 * u, -.55 * u], [.95 * u, -.10 * u], [1.10 * u, 1.30 * u], [.80 * u, 2.05 * u], [-.80 * u, 2.05 * u]], 4),
+    { wash: PAL.steel, alpha: .38, ink: PAL.ink, sw: 2.2 * lw, key: sk + 'bd' });
+  paint(ctx, rrPts(-.62 * u, -.30 * u, 1.24 * u, .78 * u, .16 * u, 1), { wash: PAL.ochre, alpha: .22, ink: PAL.inkSoft, sw: 1.4 * lw, key: sk + 'plate' });
+  for (let i = 0; i < 3; i++) paint(ctx, ellPts(-.34 * u + i * .34 * u, .48 * u, .07 * u, .07 * u, 10), { wash: PAL.inkSoft, alpha: .5, edge: false, key: sk + 'rv' + i });
+  // base
+  paint(ctx, through([[-.80 * u, 2.05 * u], [.80 * u, 2.05 * u], [.92 * u, 2.42 * u], [-.92 * u, 2.42 * u]], 3), { wash: PAL.dusk, alpha: .30, ink: PAL.ink, sw: 1.8 * lw, key: sk + 'base' });
 
-  // body bell
-  const bell = through([[-1.75 * u, 2.2 * u], [-1.95 * u, .35 * u], [-1.15 * u, -.55 * u], [1.15 * u, -.55 * u], [1.95 * u, .35 * u], [1.75 * u, 2.2 * u]], 5, .3);
-  paint(ctx, [...bell, [-1.75 * u, 2.2 * u]], { wash: PAL.rust, alpha: .13, ink: PAL.ink, sw: 1.9 * u / 40, key: sk + 'bd' });
-  // grille
-  for (let i = 0; i < 3; i++) ink(ctx, [[-.7 * u, (.35 + i * .38) * u], [.7 * u, (.35 + i * .38) * u]], { w: 1.5 * u / 40, key: sk + 'g' + i });
+  // neck + head: a rounded column, one lens
+  ink(ctx, [[0, -.55 * u], [0, -.95 * u]], { w: 5 * lw, key: sk + 'neck' });
+  paint(ctx, through([[-.72 * u, -1.62 * u], [-.72 * u, -2.28 * u], [-.44 * u, -2.62 * u], [.44 * u, -2.62 * u], [.72 * u, -2.28 * u], [.72 * u, -1.62 * u], [.44 * u, -1.36 * u], [-.44 * u, -1.36 * u]], 4),
+    { wash: PAL.steel, alpha: .42, ink: PAL.ink, sw: 2.1 * lw, key: sk + 'hd' });
+  // collar ring
+  paint(ctx, ribbonPts(through([[-.66 * u, -1.40 * u], [0, -1.30 * u], [.66 * u, -1.40 * u]], 5), .16 * u), { wash: PAL.ochre, alpha: .32, ink: PAL.ink, sw: 1.4 * lw, key: sk + 'ring' });
+  // lens
+  const lx = look * .07 * u;
+  paint(ctx, ellPts(lx, -2.0 * u, .30 * u, .30 * u, 20), { wash: PAL.ink, alpha: .55, ink: PAL.ink, sw: 1.8 * lw, key: sk + 'lens' });
+  paint(ctx, ellPts(lx - .09 * u, -2.10 * u, .11 * u, .10 * u, 12), { wash: PAL.cream, alpha: .55, edge: false, key: sk + 'lh' });
+  if (mood === 'happy') ink(ctx, arcPts(lx, -1.92 * u, .24 * u, Math.PI * 1.15, Math.PI * 1.85, 10), { w: 2.2 * lw, key: sk + 'smile' });
+  // antenna
+  ink(ctx, [[.1 * lx, -2.62 * u], [.16 * lx, -3.18 * u]], { w: 1.8 * lw, key: sk + 'ant' });
+  paint(ctx, ellPts(.16 * lx, -3.26 * u, .10 * u, .10 * u, 12), { wash: PAL.lamp, alpha: .55, ink: PAL.ink, sw: 1.2 * lw, key: sk + 'anb' });
+  glow(ctx, .16 * lx, -3.26 * u, .9 * u, PAL.lamp, .30);
 
-  // head
-  paint(ctx, blobPts(0, -1.75 * u, 1.32 * u, 6, .05, 26), { wash: PAL.steel, alpha: .17, ink: PAL.ink, sw: 2.0 * u / 40, key: sk + 'hd' });
-  // antenna + its little light
-  ink(ctx, [[0, -3.0 * u], [.12 * u, -3.75 * u]], { w: 2.0 * u / 40, key: sk + 'an' });
-  paint(ctx, ellPts(.12 * u, -3.9 * u, .21 * u, .21 * u, 14), { wash: PAL.lamp, alpha: .5, ink: PAL.ink, sw: 1.4 * u / 40, key: sk + 'anb' });
-  glow(ctx, .12 * u, -3.9 * u, 1.1 * u, PAL.lamp, .35);
-
-  // face
-  const ey = -1.85 * u;
-  if (mood === 'happy') {
-    for (const sx of [-1, 1]) ink(ctx, arcPts(sx * .45 * u, ey + .1 * u, .22 * u, Math.PI * 1.15, Math.PI * 1.85, 8), { w: 2.2 * u / 40, key: sk + 'eh' + sx });
-  } else if (mood === 'eager') {
-    for (const sx of [-1, 1]) paint(ctx, ellPts(sx * .45 * u, ey, .26 * u, .30 * u, 14), { wash: PAL.ink, alpha: .95, edge: false, key: sk + 'ee' + sx });
-  } else {
-    for (const sx of [-1, 1]) paint(ctx, ellPts(sx * .45 * u + look * .1 * u, ey, .22 * u, .24 * u, 14), { wash: PAL.ink, alpha: .9, edge: false, key: sk + 'e' + sx });
-  }
-  ink(ctx, through([[-.34 * u, -.95 * u], [0, -.82 * u], [.34 * u, -.95 * u]], 5), { w: 1.9 * u / 40, key: sk + 'mo' });
-
-  // crank on the back
-  const ca = crank * TAU;
-  ink(ctx, [[-1.9 * u, .9 * u], [-2.5 * u, .9 * u + Math.sin(ca) * .5 * u]], { w: 2.0 * u / 40, key: sk + 'cr' });
-
-  // arms
+  // arms: two thin segments, hands like small blocks
   for (const [sx, ang] of [[-1, armL], [1, armR]]) {
-    const sh = [sx * 1.7 * u, .1 * u];
-    const hd = [sh[0] + sx * 1.15 * u, sh[1] + ang * 1.9 * u];
-    ink(ctx, through([sh, [(sh[0] + hd[0]) / 2 + sx * .2 * u, (sh[1] + hd[1]) / 2], hd], 4), { w: 2.3 * u / 40, key: sk + 'ar' + sx });
-    paint(ctx, ellPts(hd[0], hd[1], .30 * u, .28 * u, 12), { wash: PAL.steel, alpha: .25, ink: PAL.ink, sw: 1.4 * u / 40, key: sk + 'hh' + sx });
+    const sh = [sx * 1.02 * u, -.20 * u];
+    const a = ang + Math.sin(t * .8 + sx) * .05;
+    const el = [sh[0] + sx * Math.sin(a * .7) * .95 * u, sh[1] + Math.cos(a * .7) * .95 * u];
+    const hd = [el[0] + sx * Math.sin(a) * .85 * u, el[1] + Math.cos(a) * .85 * u];
+    ink(ctx, through([sh, el, hd], 5), { w: 3.0 * lw, col: PAL.inkSoft, key: sk + 'ar' + sx });
+    paint(ctx, rrPts(hd[0] - .16 * u, hd[1] - .14 * u, .34 * u, .30 * u, .10 * u, 1), { wash: PAL.steel, alpha: .42, ink: PAL.ink, sw: 1.5 * lw, key: sk + 'hh' + sx });
   }
   ctx.restore();
 }

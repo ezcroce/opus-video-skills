@@ -3,9 +3,9 @@
 //   node render.mjs --from=30 --to=34 --fps=24 --out=out/test.mp4 [--audio=...]
 import { createCanvas } from '@napi-rs/canvas';
 import { spawn } from 'node:child_process';
-import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { dirname } from 'node:path';
-import { W, H, paper, grain, vignette, setBoil, bleedPts, PAL } from './engine/core.mjs';
+import { W, H, paper, grain, vignette, setBoil, bleedPts, PAL, VOICE } from './engine/core.mjs';
 import SHOTS from './shots/index.mjs';
 
 const args = process.argv.slice(2);
@@ -15,6 +15,8 @@ const FFMPEG = process.env.FFMPEG || 'ffmpeg';
 
 const FPS = Number(val('fps', 24));
 const cues = JSON.parse(readFileSync('cues.json', 'utf8'));
+// Per-frame mouth values measured from the episode audio (envelope.mjs). Missing file = closed mouth.
+const ENV = existsSync('envelope.json') ? JSON.parse(readFileSync('envelope.json', 'utf8')).frames : null;
 const DUR = cues.duration;
 
 const main = createCanvas(W, H);
@@ -52,6 +54,10 @@ const lerp = (a, b, x) => a + (b - a) * x;
 const ease = x => { const c = Math.max(0, Math.min(1, x)); return c * c * (3 - 2 * c); };
 
 function frame(t) {
+  if (ENV) {
+    const e = ENV[Math.min(ENV.length - 1, Math.max(0, Math.round(t * cues.fps || t * 24)))];
+    VOICE.open = e[0]; VOICE.spread = e[1];
+  }
   const shot = drawShot(t);
   mctx.setTransform(1, 0, 0, 1, 0, 0);
   mctx.globalCompositeOperation = 'source-over';

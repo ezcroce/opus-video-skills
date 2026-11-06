@@ -8,16 +8,20 @@ export const TAU = Math.PI * 2;
 export const BOIL = 12;                     // linework reseeds 12x a second, like hand-drawn animation
 
 export const PAL = {
-  paper: '#EADFC7',
-  cream: '#FBF3E2',
-  ink: '#241C19',
-  inkSoft: '#4A3A31',
-  // section hues (soft, pigment-like — nothing saturated, nothing pure)
-  ochre: '#D9A33F', terracotta: '#C0644A', plum: '#7A4A5C', olive: '#7E8A4F',
-  sky: '#8FA9B8', sea: '#5E7F8C', rust: '#A8543A', mars: '#B4614A',
-  moss: '#5F7248', dusk: '#3C4457', rose: '#D98E7A', sand: '#D8C59A',
-  lamp: '#F0C066', steel: '#7C8A93', leaf: '#8FA768',
+  paper: '#E9DFC9',
+  cream: '#F5EDDC',
+  ink: '#211A17',
+  inkSoft: '#4B3B33',
+  // a muted, pigment-led range: nothing candy, nothing pure
+  ochre: '#C0914E', terracotta: '#AE5F4A', plum: '#6B4650', olive: '#6F7A4E',
+  sky: '#8FA3B0', sea: '#4E6A75', rust: '#984A38', mars: '#A75B48',
+  moss: '#53664A', dusk: '#232B3A', rose: '#C68C7C', sand: '#CDB894',
+  lamp: '#E7BE74', steel: '#77828A', leaf: '#879669', skin: '#E3C3A6', hair: '#3B2A2A',
 };
+
+// What the voice is doing this frame. The renderer fills this from envelope.mjs before each frame;
+// the cast reads it so the mouth is driven by the actual audio, not by a timer.
+export const VOICE = { open: 0, spread: 0 };
 
 // ---------------------------------------------------------------- math ----
 export const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
