@@ -1,0 +1,15 @@
+{
+  "lang": "pt-BR",
+  "lines": [
+    { "id": 1, "panel": "egypt",       "text": "Egito. Um povo inteiro trabalha sob o chicote, levantando tijolo para as cidades do faraó." },
+    { "id": 2, "panel": "pharaoh",     "text": "O faraó olha aquela multidão e sente medo. Então ordena: todo menino hebreu será lançado ao rio." },
+    { "id": 3, "panel": "basket",      "text": "Mas uma mãe esconde o filho num cesto de junco, entre os papiros. A filha do faraó o encontra, e o chama de Moisés." },
+    { "id": 4, "panel": "desert",      "text": "Moisés cresce no palácio. Um dia vê um egípcio ferindo um escravo, e foge para o deserto." },
+    { "id": 5, "panel": "bush",        "text": "Ali, uma sarça arde. Arde e não se consome. Uma voz chama o nome dele: Eu sou o que sou. Volta ao Egito." },
+    { "id": 6, "panel": "confront",    "text": "Moisés volta e diz ao faraó: deixa o meu povo ir. O faraó escuta, e recusa." },
+    { "id": 7, "panel": "blood",       "text": "Então o Nilo vira sangue. E depois vêm as pragas: rãs, piolhos, moscas, gado doente, feridas, granizo, gafanhotos." },
+    { "id": 8, "panel": "plagues",     "text": "Trevas por três dias. E a última praga: a morte dos primogênitos. Naquela noite, o faraó manda o povo embora." },
+    { "id": 9, "panel": "chariots",    "text": "Mas o coração dele muda de novo. Os carros de guerra partem atrás dos hebreus, até a beira do mar." },
+    { "id": 10, "panel": "sea",        "text": "O povo está encurralado: água na frente, exército atrás. Moisés estende a mão, e o vento abre um caminho. Uma parede de água à direita, outra à esquerda, e todos atravessam em terra seca. Quando o último pé toca a outra margem, as águas voltam ao seu lugar. Do outro lado do mar, começa a liberdade." }
+  ]
+}

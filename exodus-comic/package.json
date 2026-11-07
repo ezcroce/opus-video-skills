@@ -1,0 +1,13 @@
+{
+  "name": "exodus-comic",
+  "private": true,
+  "type": "module",
+  "description": "The Exodus, as a printed comic — pt-BR narration",
+  "scripts": {
+    "sheet": "node render.mjs --sheet=2,10,20 --cols=3 --out=out/check/sheet.jpg",
+    "render": "node render.mjs --fps=24 --audio=audio/narration.m4a --out=out/film.mp4"
+  },
+  "dependencies": {
+    "@napi-rs/canvas": "^0.1.60"
+  }
+}

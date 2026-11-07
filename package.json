@@ -1,0 +1,9 @@
+{
+  "name": "opus-video-skills",
+  "private": true,
+  "type": "module",
+  "description": "Shared native deps for the film projects; each project has its own package.json",
+  "dependencies": {
+    "@napi-rs/canvas": "^0.1.60"
+  }
+}

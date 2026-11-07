@@ -1,0 +1,96 @@
+{
+  "duration": 123.2,
+  "panels": [
+    {
+      "panel": "egypt",
+      "clip": 1,
+      "start": 1.2,
+      "end": 9.5,
+      "dur": 7.85
+    },
+    {
+      "panel": "pharaoh",
+      "clip": 2,
+      "start": 9.5,
+      "end": 18.85,
+      "dur": 8.9
+    },
+    {
+      "panel": "basket",
+      "clip": 3,
+      "start": 18.85,
+      "end": 28.83,
+      "dur": 9.53
+    },
+    {
+      "panel": "desert",
+      "clip": 4,
+      "start": 28.83,
+      "end": 37.73,
+      "dur": 8.45
+    },
+    {
+      "panel": "bush",
+      "clip": 5,
+      "start": 37.73,
+      "end": 49.75,
+      "dur": 11.57
+    },
+    {
+      "panel": "confront",
+      "clip": 6,
+      "start": 49.75,
+      "end": 57.98,
+      "dur": 7.78
+    },
+    {
+      "panel": "blood",
+      "clip": 7,
+      "start": 57.98,
+      "end": 61.386,
+      "dur": 3.406
+    },
+    {
+      "panel": "plagues",
+      "clip": 7,
+      "start": 61.386,
+      "end": 71.53,
+      "dur": 9.694
+    },
+    {
+      "panel": "darkness",
+      "clip": 8,
+      "start": 71.53,
+      "end": 73.864,
+      "dur": 2.334
+    },
+    {
+      "panel": "departure",
+      "clip": 8,
+      "start": 73.864,
+      "end": 82.59,
+      "dur": 8.276
+    },
+    {
+      "panel": "chariots",
+      "clip": 9,
+      "start": 82.59,
+      "end": 91.34,
+      "dur": 8.3
+    },
+    {
+      "panel": "sea",
+      "clip": 10,
+      "start": 91.34,
+      "end": 104.049,
+      "dur": 12.709
+    },
+    {
+      "panel": "cross",
+      "clip": 10,
+      "start": 104.049,
+      "end": 122.05,
+      "dur": 17.551
+    }
+  ]
+}
