@@ -19,6 +19,13 @@
 |---|---|---|
 | [painted-animation](skills/painted-animation/) | 手绘水彩与墨线卡通，带角色表演 | 动画短片、音乐视频、带卡拉 OK 字幕的歌词 MV |
 | [kinetic-reel](skills/kinetic-reel/) | 动态排版：窄体大字、HUD 式小字标注、WebGL 图层 | 作品集短片、Showreel、产品片与片头 |
+| [ant-underground](skills/ant-underground/) | 带现代光照的像素画：抖动天空、柔和光池、点阵字幕 | 竖屏短故事、复古像素短片 |
+
+### ant-underground
+
+![ant-underground](skills/ant-underground/docs/reel-sheet.jpg)
+
+每一帧都绘制在 180×320 的像素缓冲上，最后以最近邻放大 6 倍，像素网格得以保留。天空用 Bayer 矩阵抖动，土壤是双倍频噪声格，悬挂的灯投下柔和的光池——光只向下落，字幕则使用双色点阵字体。示例为 23 秒竖屏短片《A Formigueiro》，讲一只蚂蚁如何爬出蚁穴。[说明文档](skills/ant-underground/README.md)。
 
 ### painted-animation
 
@@ -46,6 +53,7 @@
 /plugin marketplace add tuzhechen2005/opus-video-skills
 /plugin install painted-animation@opus-video-skills
 /plugin install kinetic-reel@opus-video-skills
+/plugin install ant-underground@opus-video-skills
 ```
 
 可以只装其中一个，也可以都装。之后用 `/plugin update` 获取新版本。
@@ -56,6 +64,7 @@
 git clone https://github.com/tuzhechen2005/opus-video-skills ~/opus-video-skills
 ln -s ~/opus-video-skills/skills/painted-animation ~/.claude/skills/painted-animation
 ln -s ~/opus-video-skills/skills/kinetic-reel ~/.claude/skills/kinetic-reel
+ln -s ~/opus-video-skills/skills/ant-underground ~/.claude/skills/ant-underground
 ```
 
 之后在 `~/opus-video-skills` 中执行 `git pull` 即可更新。
@@ -79,6 +88,7 @@ ln -s ~/opus-video-skills/skills/kinetic-reel ~/.claude/skills/kinetic-reel
 | `.claude-plugin/marketplace.json` | 插件市场清单（每个技能对应一个插件） |
 | `skills/painted-animation/` | 水彩动画技能：引擎、指南与示例 |
 | `skills/kinetic-reel/` | 动态排版短片技能：引擎、指南与示例 |
+| `skills/ant-underground/` | 像素画竖屏短片技能：引擎、指南与示例 |
 
 ## 新增风格
 

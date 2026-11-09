@@ -1,0 +1,15 @@
+{
+  "name": "ant-underground",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Underground pixel reel: a low-res pixel buffer with soft gradients and dithered sky, rendered frame by frame in headless Chrome",
+  "scripts": {
+    "sheet": "node render.mjs --sheet=0.5,2,4.5,7,9.5,12,14.5,17,19.5,21.5 --cols=5 --w=360 --out=out/check/sheet.jpg",
+    "frames": "node render.mjs --frames --workers=4",
+    "score": "node music/score.mjs",
+    "encode": "node render.mjs --encode --audio=assets/score.m4a --out=out/reel.mp4"
+  },
+  "dependencies": {
+    "puppeteer-core": "^25.11.0"
+  }
+}

@@ -27,6 +27,16 @@
       "category": "design",
       "keywords": ["motion-graphics", "kinetic-typography", "showreel", "threejs", "webgl"],
       "homepage": "https://github.com/tuzhechen2005/opus-video-skills/tree/main/skills/kinetic-reel"
+    },
+    {
+      "name": "ant-underground",
+      "description": "Vertical pixel-art narrative reels: a low-resolution pixel buffer with dithered skies, soft light pools and a bitmap caption font, rendered frame by frame in headless Chrome with a synthesized score.",
+      "source": "./",
+      "strict": false,
+      "skills": ["./skills/ant-underground"],
+      "category": "design",
+      "keywords": ["pixel-art", "retro", "vertical", "short-form", "reel"],
+      "homepage": "https://github.com/tuzhechen2005/opus-video-skills/tree/main/skills/ant-underground"
     }
   ]
 }

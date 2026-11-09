@@ -19,6 +19,13 @@ Each skill in this repository teaches Claude Opus 5.5 to produce a complete vide
 |---|---|---|
 | [painted-animation](skills/painted-animation/) | Hand-painted watercolour and ink cartoon, with character acting | Animated shorts, music videos, lyric videos with karaoke |
 | [kinetic-reel](skills/kinetic-reel/) | Kinetic typography: condensed display type, HUD micro-type, WebGL layers | Portfolio and work reels, showreels, product and intro films |
+| [ant-underground](skills/ant-underground/) | Pixel art with modern lighting: dithered skies, soft light pools, bitmap captions | Vertical short-form stories, retro pixel shorts |
+
+### ant-underground
+
+![ant-underground](skills/ant-underground/docs/reel-sheet.jpg)
+
+Draws every frame into a 180×320 pixel buffer and upscales it ×6, so the grid survives. The sky is dithered with a Bayer matrix, the soil is a two-octave noise lattice, a hanging lamp throws a soft pool of light that falls downward, and the captions are a chunky bitmap font in two tones. Example: "A Formigueiro", a 23 s vertical short about an ant who climbs out of the anthill. [Documentation](skills/ant-underground/README.md).
 
 ### painted-animation
 
@@ -46,6 +53,7 @@ Combines a 2D type canvas with three.js layers (particle terrain, liquid marble,
 /plugin marketplace add tuzhechen2005/opus-video-skills
 /plugin install painted-animation@opus-video-skills
 /plugin install kinetic-reel@opus-video-skills
+/plugin install ant-underground@opus-video-skills
 ```
 
 Install either skill or both. `/plugin update` fetches new versions.
@@ -56,6 +64,7 @@ Install either skill or both. `/plugin update` fetches new versions.
 git clone https://github.com/tuzhechen2005/opus-video-skills ~/opus-video-skills
 ln -s ~/opus-video-skills/skills/painted-animation ~/.claude/skills/painted-animation
 ln -s ~/opus-video-skills/skills/kinetic-reel ~/.claude/skills/kinetic-reel
+ln -s ~/opus-video-skills/skills/ant-underground ~/.claude/skills/ant-underground
 ```
 
 Updating is then a `git pull` in `~/opus-video-skills`.
@@ -79,6 +88,7 @@ Each skill scaffolds a project, presents a storyboard, builds and reviews every 
 | `.claude-plugin/marketplace.json` | Plugin marketplace manifest (one plugin per skill) |
 | `skills/painted-animation/` | Watercolour animation skill: engine, guides, examples |
 | `skills/kinetic-reel/` | Kinetic-typography reel skill: engine, guides, examples |
+| `skills/ant-underground/` | Pixel-art vertical reel skill: engine, guides, examples |
 
 ## Adding a Style
 
