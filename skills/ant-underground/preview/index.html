@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ant-underground — i reel</title>
+<style>
+  :root {
+    --soil: #120a08;
+    --soil2: #1c0f0b;
+    --cream: #e8e0d0;
+    --amber: #f0a83c;
+    --violet: #b088e8;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; background: var(--soil); color: var(--cream);
+    font: 15px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  body {
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse 70% 50% at 50% -10%, #3a1d14 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 50% 110%, #2a1410 0%, transparent 70%);
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 32px 20px 64px; }
+  h1 {
+    font-size: 20px; letter-spacing: .22em; text-transform: uppercase;
+    margin: 0 0 6px; color: var(--amber);
+  }
+  .sub { color: #9a8c7c; margin: 0 0 36px; font-size: 13px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 36px; }
+  figure { margin: 0; }
+  .frame {
+    background: #000; border: 1px solid #2e1a12; border-radius: 10px;
+    overflow: hidden; position: relative;
+    box-shadow: 0 18px 44px rgba(0,0,0,.55), 0 0 0 1px rgba(240,168,60,.08) inset;
+  }
+  video { display: block; width: 100%; height: auto; background: #000; }
+  figcaption { margin-top: 12px; }
+  .name {
+    font-size: 14px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--cream); margin-bottom: 6px;
+  }
+  .desc { color: #9a8c7c; font-size: 13px; }
+  .caps { margin: 14px 0 0; padding: 0; list-style: none; font-size: 12.5px; color: #b6a898; }
+  .caps li { padding: 2px 0; }
+  .caps b { color: var(--amber); font-weight: 600; }
+  .caps i { color: var(--violet); font-style: normal; }
+  a.dl {
+    display: inline-block; margin-top: 14px; color: var(--amber);
+    text-decoration: none; border-bottom: 1px solid rgba(240,168,60,.35);
+    font-size: 12.5px; letter-spacing: .08em;
+  }
+  a.dl:hover { border-bottom-color: var(--amber); }
+  .note {
+    margin-top: 44px; padding-top: 22px; border-top: 1px solid #2a1a12;
+    color: #7d7062; font-size: 12.5px;
+  }
+  .note b { color: #b6a898; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>ant-underground</h1>
+  <p class="sub">reel verticali in pixel art &middot; 1080&times;1920 &middot; 23 s &middot; 30 fps</p>
+
+  <div class="grid">
+    <figure>
+      <div class="frame">
+        <video src="reel-reference.mp4" controls autoplay muted loop playsinline preload="auto"></video>
+      </div>
+      <figcaption>
+        <div class="name">Il reel di riferimento</div>
+        <div class="desc">La storia vera del video originale: l&rsquo;ant&nbsp;che parla in seconda persona. Soggetto eliso di proposito &mdash; <b>vira formiga</b> &mdash; e il soggetto sei tu.</div>
+        <ul class="caps">
+          <li><b>ESTE FORMIGUEIRO</b> &middot; FORMIGAS <i>&mdash; la dichiarazione</i></li>
+          <li><b>QUER SER</b> &middot; VIRA FORMIGA <i>&mdash; il desiderio</i></li>
+          <li>VIRA FORMIGA &middot; <b>QUEM SEGUE</b> <i>&mdash; l&rsquo;invito</i></li>
+          <li><b>DO G&Eacute;U</b> &middot; ELA CAVOU <i>&mdash; il cliffhanger</i></li>
+        </ul>
+        <a class="dl" href="reel-reference.mp4" download>scarica il mp4</a>
+      </figcaption>
+    </figure>
+
+    <figure>
+      <div class="frame">
+        <video src="reel-example.mp4" controls autoplay muted loop playsinline preload="auto"></video>
+      </div>
+      <figcaption>
+        <div class="name">A Formigueiro &mdash; l&rsquo;esempio</div>
+        <div class="desc">Stessa struttura a quattro tempi, palette fredda, e la CTA spostata sul <b>commento</b>: chi commenta riceve un lavoro nella colonia.</div>
+        <ul class="caps">
+          <li><b>ESTE FORMIGUEIRO</b> &middot; FORMIGAS <i>&mdash; la dichiarazione</i></li>
+          <li><b>EL QUER</b> &middot; TRABALHAR <i>&mdash; il desiderio</i></li>
+          <li>TRABALHA AQUI &middot; <b>QUEM COMENTA</b> <i>&mdash; l&rsquo;invito</i></li>
+          <li><b>DEBAIXO</b> &middot; ELA CAVOU <i>&mdash; il cliffhanger</i></li>
+        </ul>
+        <a class="dl" href="reel-example.mp4" download>scarica il mp4</a>
+      </figcaption>
+    </figure>
+  </div>
+
+  <p class="note">
+    <b>Nota.</b> Il video originale su Instagram non era raggiungibile dal mio sandbox: i domini di Instagram e i suoi CDN sono bloccati.
+    Lo stile &egrave; stato ricostruito misurando sei fotogrammi dello screen, e la storia &egrave; stata ricostruita dalle didascalie
+    che si leggono in quei fotogrammi. Quindi: <b>stile e testo sono misurati</b>, il movimento &egrave; un&rsquo;interpretazione.
+  </p>
+</div>
+</body>
+</html>
