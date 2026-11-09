@@ -3,9 +3,16 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Instagram Manager — risposte calme e gentili</title>
+<title>Custode — assistente Instagram</title>
+<meta name="description" content="Legge commenti e direct di Instagram e prepara risposte calme e gentili, con la tua approvazione." />
+<meta name="theme-color" content="#16302a" />
 <link rel="stylesheet" href="/style.css" />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='26' fill='%232f6b4f'/%3E%3Ccircle cx='50' cy='50' r='21' fill='none' stroke='%23f7f4ee' stroke-width='7'/%3E%3Ccircle cx='72' cy='28' r='5' fill='%23f7f4ee'/%3E%3C/svg%3E" />
+<link rel="manifest" href="/manifest.webmanifest" />
+<link rel="icon" href="/assets/icon-48.png" sizes="48x48" />
+<link rel="icon" href="/assets/icon-192.png" sizes="192x192" />
+<link rel="apple-touch-icon" href="/assets/icon-192.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="Custode" />
 </head>
 <body>
 <div class="app">
@@ -212,6 +219,33 @@
         <div class="head-actions" id="connect-actions"></div>
       </header>
 
+      <article class="card" id="config-card">
+        <div class="card-head">
+          <div>
+            <h2>Configurazione dell’app Meta</h2>
+            <p class="muted">Incolla qui i due valori dell’app e il gioco è fatto: il file <code>.env</code> lo scrivo io.</p>
+          </div>
+          <span class="pill off" id="config-pill">da configurare</span>
+        </div>
+        <form id="config-form" class="config-grid" novalidate>
+          <label class="field"><span>App ID</span><input name="appId" inputmode="numeric" autocomplete="off" placeholder="solo cifre" /></label>
+          <label class="field"><span>App Secret</span><input name="appSecret" type="password" autocomplete="off" placeholder="lascia vuoto per non cambiarlo" /></label>
+          <label class="field"><span>Redirect URI</span><input name="redirectUri" spellcheck="false" /></label>
+          <label class="field">
+            <span>Verify token del webhook</span>
+            <span class="input-with-btn">
+              <input name="verifyToken" spellcheck="false" />
+              <button type="button" class="btn ghost small" id="gen-token">Genera</button>
+            </span>
+          </label>
+          <div class="config-actions">
+            <button class="btn primary" type="submit">Salva configurazione</button>
+            <button class="btn ghost" type="button" id="config-help">Dove li trovo?</button>
+            <p class="muted small" id="config-status"></p>
+          </div>
+        </form>
+      </article>
+
       <div class="grid-2 align-start">
         <article class="card">
           <h2>Stato</h2>
@@ -233,6 +267,21 @@
       <article class="card">
         <h2>Permessi richiesti</h2>
         <div class="scopes" id="scopes"></div>
+      </article>
+
+      <article class="card">
+        <div class="card-head">
+          <div>
+            <h2>Aprirla come un’app</h2>
+            <p class="muted">Una finestra sua, niente barra degli indirizzi, icona nel menu.</p>
+          </div>
+        </div>
+        <div class="capabilities">
+          <div class="cap yes"><b>Windows</b><small>Doppio clic su <code>Avvia Custode (senza finestra).vbs</code>. Per l’icona sul desktop: <code>install → Crea collegamento sul desktop.bat</code>.</small></div>
+          <div class="cap yes"><b>macOS</b><small>Doppio clic su <code>Avvia Custode.command</code>. Per averla nel Launchpad: <code>install/crea-app-macos.command</code>.</small></div>
+          <div class="cap yes"><b>Linux</b><small><code>sh install/installa-app-linux.sh</code>: comparirà nel menu delle applicazioni con la sua icona.</small></div>
+          <div class="cap warn"><b>Sempre, nel browser</b><small>Su Edge o Chrome: menu → <em>App → Installa questo sito come app</em>. Anche così ottieni una finestra separata.</small></div>
+        </div>
       </article>
 
       <article class="card warn-card">

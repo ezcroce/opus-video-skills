@@ -384,3 +384,13 @@ input[type="range"] { width: 100%; accent-color: var(--green); }
 /* link che si comportano come bottoni */
 a.btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; color: var(--ink); }
 a.btn.primary { color: #fff; }
+
+/* ---------------- configurazione app Meta ---------------- */
+.config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; margin-top: 2px; }
+.config-grid .field { margin-top: 12px; }
+.config-actions { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+.config-actions #config-status { flex-basis: 100%; min-height: 1.2em; }
+.input-with-btn { display: flex; gap: 6px; }
+.input-with-btn input { flex: 1; }
+.input-with-btn .btn { white-space: nowrap; align-self: stretch; }
+@media (max-width: 760px) { .config-grid { grid-template-columns: 1fr; } }

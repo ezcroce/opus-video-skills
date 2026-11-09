@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0" stop-color="#1d3d33"/>
+      <stop offset="1" stop-color="#0e211c"/>
+    </linearGradient>
+    <linearGradient id="cream" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f3e6c9"/>
+      <stop offset="1" stop-color="#d9c395"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1024" height="1024" rx="224" fill="url(#bg)"/>
+
+  <!-- fumetto -->
+  <path fill="url(#cream)" d="M512 246c-161 0-292 104-292 232 0 84 53 158 136 200l-18 112c-3 17 16 28 30 18l122-88c7 1 15 1 22 1 161 0 292-104 292-232S673 246 512 246z"/>
+
+  <!-- occhi -->
+  <circle cx="424" cy="452" r="20" fill="#16302a"/>
+  <circle cx="600" cy="452" r="20" fill="#16302a"/>
+
+  <!-- sorriso calmo -->
+  <path d="M424 524c24 30 55 45 88 45s64-15 88-45" fill="none" stroke="#16302a" stroke-width="28" stroke-linecap="round"/>
+</svg>

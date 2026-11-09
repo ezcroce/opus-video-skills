@@ -1,12 +1,15 @@
 {
-  "name": "instagram-manager",
+  "name": "custode-instagram-manager",
   "private": true,
   "version": "1.0.0",
-  "description": "Assistente che legge commenti e direct di Instagram e propone risposte calme e gentili, con approvazione umana.",
+  "description": "Custode: assistente locale che legge commenti e direct di Instagram e propone risposte calme e gentili.",
   "type": "module",
-  "engines": { "node": ">=18" },
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
-    "start": "node app/server.mjs",
+    "start": "node app/launcher.mjs",
+    "server": "node app/server.mjs",
     "dev": "node --watch app/server.mjs"
   }
 }

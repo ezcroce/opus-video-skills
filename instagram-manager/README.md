@@ -1,11 +1,12 @@
-# Instagram Manager
+# Custode — Instagram Manager
 
-Un assistente che si occupa della parte più faticosa di Instagram: leggere commenti e direct, rispondere
-**con calma e gentilezza**, e tenere d'occhio come sta la community. Funziona con l'API ufficiale di Meta,
+Un'app da tavolo che si occupa della parte più faticosa di Instagram: leggere commenti e direct,
+rispondere **con calma e gentilezza**, e tenere d'occhio come sta la community. Funziona con l'API ufficiale di Meta,
 quindi non rischia di farti bloccare l'account.
 
-Si apre come una piccola dashboard locale: un pannello, nessun servizio da pagare, nessun dato che esce dal
-tuo computer — tranne le chiamate a Meta e, se la attivi, al modello linguistico.
+Si chiama **Custode** e si apre in una finestra sua, come un programma qualunque: nessun servizio da
+pagare, nessun dato che esce dal tuo computer — tranne le chiamate a Meta e, se la attivi, al modello
+linguistico.
 
 ---
 
@@ -23,17 +24,33 @@ Il principio è semplice: **l'assistente prepara, tu approvi**. L'invio automati
 default e, quando lo accendi, parte solo per le bozze sopra la soglia di sicurezza che scegli — con un
 ritardo di uno o due minuti, perché nessuno risponde in due decimi di secondo.
 
-## Provarlo subito (senza account)
+## Avviarla come app (consigliato)
+
+Si apre in una **finestra sua**, senza barra degli indirizzi, e si chiude come qualsiasi programma.
+Serve solo Node.js 18 o superiore installato una volta ([nodejs.org](https://nodejs.org), versione LTS):
+dopo, tutto si fa con un doppio clic.
+
+| Sistema | Doppio clic su | Per averla con l'icona |
+|---|---|---|
+| **Windows** | `Avvia Custode (senza finestra).vbs` (silenzioso) o `Avvia Custode.bat` (con log) | `install → Crea collegamento sul desktop.bat` |
+| **macOS** | `Avvia Custode.command` | `install/crea-app-macos.command` crea `Custode.app` da mettere in Applicazioni |
+| **Linux** | `Avvia Custode.sh` | `sh install/installa-app-linux.sh` la aggiunge al menu |
+
+Da terminale, se preferisci:
 
 ```bash
-cd instagram-manager
-npm start            # oppure: node app/server.mjs
+npm start            # avvia l'app (finestra dedicata)
+npm run server       # solo il server, poi apri http://localhost:4321
 ```
 
-Apri <http://localhost:4321>. Non servono credenziali: la dashboard lavora su un account di prova
-(`@bottega.luce`, ceramiche a Padova) con due settimane di dati, commenti realistici, un reclamo, un
-commento spam e due direct. Il pulsante **Sincronizza** fa arrivare nuove conversazioni, **Casella** mostra
-le bozze, **Impostazioni** cambia tono e permessi.
+L'app cerca Chrome, Edge, Brave o Chromium e li usa in modalità `--app`: è una finestra separata, con
+l'icona di Custode nella barra delle applicazioni. Se non ne trova nessuno, apre il browser predefinito.
+Quando chiudi la finestra, il server si spegne da solo.
+
+Alla prima apertura non servono credenziali: la dashboard lavora su un account di prova (`@bottega.luce`,
+ceramiche a Padova) con due settimane di dati, commenti realistici, un reclamo, un commento spam e due
+direct. Il pulsante **Sincronizza** fa arrivare nuove conversazioni, **Casella** mostra le bozze,
+**Impostazioni** cambia tono e permessi.
 
 Per vedere l'invio automatico in azione: Impostazioni → attiva *Invio automatico* → torna in Casella e
 genera una bozza su un complimento. Comparirà "In uscita automaticamente tra poco" con il conto alla rovescia.
@@ -46,13 +63,14 @@ Serve, una volta sola:
 2. un'**app Meta** gratuita con il prodotto *Instagram* e *Instagram Login*;
 3. due valori copiati nel file `.env` (`IG_APP_ID`, `IG_APP_SECRET`) e l'URL di callback.
 
-```bash
-cp .env.example .env     # poi compila i campi
-npm start
-```
+Non serve aprire file di configurazione: **sezione Collegamento → Configurazione dell'app Meta**, incolli
+App ID e App Secret, il redirect URI è già compilato e il verify token si genera con un clic. L'app scrive
+da sola il file `.env` (che resta sul tuo computer e non va su Git).
 
-Nella dashboard, sezione **Collegamento** → *Collega Instagram*: si apre la pagina di autorizzazione di
-Instagram, accetti i permessi, e l'app inizia a leggere i tuoi contenuti.
+Poi premi *Collega Instagram*: si apre la pagina di autorizzazione, accetti i permessi, e l'app inizia a
+leggere i tuoi contenuti.
+
+Se preferisci farlo a mano, `cp .env.example .env` e compila i campi funziona allo stesso modo.
 
 La procedura completa, con i nomi esatti dei menu e i permessi da selezionare, è in
 [docs/setup-instagram-api.md](docs/setup-instagram-api.md). Se qualcosa non torna, la sezione
@@ -94,7 +112,9 @@ Anthropic per scrivere la bozza; senza chiave, nulla esce dalla macchina. Il fil
 
 ```
 instagram-manager/
+├── Avvia Custode.bat / .vbs / .command / .sh   # doppio clic = app aperta
 ├── app/
+│   ├── launcher.mjs          # avvia il server e apre la finestra dedicata
 │   ├── server.mjs            # server HTTP, rotte, webhook, coda di invio
 │   ├── lib/
 │   │   ├── instagram.mjs     # client Graph API: solo endpoint documentati
@@ -102,7 +122,9 @@ instagram-manager/
 │   │   ├── ai.mjs            # bozze (modello o locale) + regole di invio
 │   │   ├── demo.mjs          # account di prova
 │   │   └── store.mjs         # archivio JSON
-│   └── public/               # dashboard (HTML + CSS + JS, zero dipendenze)
+│   └── public/               # interfaccia (HTML + CSS + JS, zero dipendenze)
+├── assets/                   # icona in PNG/ICO/ICNS + make-icons.py
+├── install/                  # collegamento desktop, app macOS, voce di menu Linux
 ├── docs/
 │   ├── setup-instagram-api.md
 │   └── limiti-e-regole.md
@@ -110,4 +132,5 @@ instagram-manager/
 └── package.json
 ```
 
-Nessuna dipendenza npm: solo Node 18 o superiore.
+Nessuna dipendenza npm: solo Node 18 o superiore. Le icone si rigenerano con
+`python3 assets/make-icons.py` (serve Pillow) o si modificano da `assets/icon.svg`.

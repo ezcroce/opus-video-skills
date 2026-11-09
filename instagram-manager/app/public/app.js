@@ -5,6 +5,8 @@ const nf = new Intl.NumberFormat('it-IT');
 const compact = new Intl.NumberFormat('it-IT', { notation: 'compact', maximumFractionDigits: 1 });
 
 let state = null;
+let config = null;
+let configTouched = false;
 let view = 'overview';
 let filter = 'pending';
 let selectedId = null;
@@ -68,8 +70,12 @@ async function api(path, options = {}) {
 
 async function load({ silent = false } = {}) {
   try {
-    const data = await api('/api/state');
+    const [data, cfg] = await Promise.all([
+      api('/api/state'),
+      api('/api/config').catch(() => null),
+    ]);
     state = data;
+    if (cfg) config = cfg.config;
     render();
   } catch (err) {
     if (!silent) toast(err.message, true);
@@ -83,6 +89,7 @@ function render() {
   renderInbox();
   renderSettings();
   renderConnect();
+  renderConfig();
   $('#nav-badge').textContent = state.summary.pending;
   $('#nav-badge').style.display = state.summary.pending ? 'grid' : 'none';
 }
@@ -407,12 +414,16 @@ function renderConnect() {
   const isLive = state.mode === 'live';
   $('#connect-actions').innerHTML = `
     <button class="btn" id="sync-top">Sincronizza</button>
-    ${caps.metaConfigured ? `<a class="btn primary" href="/api/auth/start">${isLive ? 'Ricollega account' : 'Collega Instagram'}</a>` : `<button class="btn primary" id="why-not">Collega Instagram</button>`}
+    ${caps.metaConfigured
+      ? `<a class="btn primary" href="/api/auth/start">${isLive ? 'Ricollega account' : 'Collega Instagram'}</a>`
+      : `<button class="btn primary" id="why-not">Prima configura l’app Meta</button>`}
   `;
   $('#sync-top')?.addEventListener('click', doSync);
-  $('#why-not')?.addEventListener('click', () =>
-    toast('Prima servono App ID, App Secret e Redirect URI nel file .env. Vedi docs/setup-instagram-api.md', true)
-  );
+  $('#why-not')?.addEventListener('click', () => {
+    $('#config-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => $('#config-form')?.elements.appId?.focus(), 350);
+    toast('Servono App ID e App Secret: li trovi in developers.facebook.com, sezione Impostazioni → Di base.');
+  });
 
   $('#connect-status').innerHTML = `
     <div class="status-line"><span class="pill ${isLive ? 'ok' : 'warn'}">${isLive ? 'collegato' : 'demo'}</span>
@@ -433,6 +444,25 @@ function renderConnect() {
     .join('');
 
   $('#scopes').innerHTML = caps.scopes.map((s) => `<code>${esc(s)}</code>`).join('');
+}
+
+function renderConfig() {
+  if (!config) return;
+  const form = $('#config-form');
+  if (!form) return;
+
+  $('#config-pill').textContent = config.configured ? 'pronta' : 'da configurare';
+  $('#config-pill').className = `pill ${config.configured ? 'ok' : 'off'}`;
+
+  if (!configTouched) {
+    form.elements.appId.value = config.appId || '';
+    form.elements.redirectUri.value = config.redirectUri || `${location.origin}/auth/callback`;
+    form.elements.verifyToken.value = config.verifyToken || '';
+    form.elements.appSecret.value = '';
+    form.elements.appSecret.placeholder = config.hasSecret
+      ? `salvato (${config.secretMask}) — lascia vuoto per non cambiarlo`
+      : 'incollalo qui';
+  }
 }
 
 async function doSync() {
@@ -569,11 +599,55 @@ $('#settings-form').addEventListener('submit', async (e) => {
   }
 });
 
+// --- configurazione dell'app: eventi
+const configForm = $('#config-form');
+configForm?.addEventListener('input', () => { configTouched = true; });
+configForm?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.currentTarget;
+  const status = $('#config-status');
+  status.textContent = 'Salvo…';
+  try {
+    const res = await api('/api/config', {
+      method: 'POST',
+      body: JSON.stringify({
+        appId: form.elements.appId.value.trim(),
+        appSecret: form.elements.appSecret.value.trim(),
+        redirectUri: form.elements.redirectUri.value.trim(),
+        verifyToken: form.elements.verifyToken.value.trim(),
+      }),
+    });
+    configTouched = false;
+    form.elements.appSecret.value = '';
+    await load({ silent: true });
+    status.textContent = res.configured
+      ? 'Salvato. Ora puoi premere “Collega Instagram”.'
+      : 'Salvato, ma mancano ancora dei valori.';
+    toast(res.notes?.length ? res.notes[0] : 'Configurazione salvata.');
+  } catch (err) {
+    status.textContent = '';
+    toast(err.message, true);
+  }
+});
+
+$('#gen-token')?.addEventListener('click', () => {
+  const bytes = crypto.getRandomValues(new Uint8Array(18));
+  const token = [...bytes].map((b) => b.toString(16).padStart(2, '0')).join('');
+  configForm.elements.verifyToken.value = token;
+  configTouched = true;
+  toast('Token generato: copialo anche nella configurazione del webhook su Meta.');
+});
+
+$('#config-help')?.addEventListener('click', () => {
+  toast('developers.facebook.com → la tua app → Impostazioni → Di base (App ID e Secret), poi Instagram → Impostazioni API con login Instagram (redirect URI).');
+});
+
 // ricarica periodica, senza disturbare chi sta scrivendo
 setInterval(() => {
   const active = document.activeElement;
   const typing = active && ['TEXTAREA', 'INPUT', 'SELECT'].includes(active.tagName);
   if (typing || view === 'settings') return;
+  if (configTouched && view === 'connect') return;
   load({ silent: true });
 }, 25_000);
 

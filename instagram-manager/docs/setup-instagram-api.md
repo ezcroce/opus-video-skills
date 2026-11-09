@@ -61,29 +61,22 @@ I permessi che l'app chiede sono quattro, tutti ufficiali:
 
 ---
 
-## Passo 3 — Il file `.env`
+## Passo 3 — Inserire le credenziali
 
-Nella cartella `instagram-manager/`:
+Apri l'app (doppio clic su `Avvia Custode…`, oppure `npm start`) e vai in **Collegamento →
+Configurazione dell'app Meta**. Incolla:
 
-```bash
-cp .env.example .env
-```
+- **App ID** (solo cifre);
+- **App Secret** (lo vedi con *Mostra* accanto al campo, in Impostazioni → Di base);
+- **Redirect URI**: già compilato con `http://localhost:4321/auth/callback`, lascialo così se usi la porta
+  predefinita;
+- **Verify token**: premi *Genera* e ottieni una stringa casuale. Ti servirà al passo 4.
 
-```ini
-IG_APP_ID=123456789012345
-IG_APP_SECRET=la-tua-chiave-segreta
-IG_REDIRECT_URI=http://localhost:4321/auth/callback
-IG_WEBHOOK_VERIFY_TOKEN=una-stringa-lunga-scelta-da-te
-```
+Premi **Salva configurazione**: l'app scrive il file `.env` per te (resta sul tuo computer, è escluso da
+Git). Se vuoi farlo a mano, `cp .env.example .env` e compila i campi funziona uguale.
 
-Avvia:
-
-```bash
-npm start
-```
-
-Dashboard su <http://localhost:4321>. Sezione **Collegamento**: tutte le spie devono essere verdi tranne
-l'ultima. Premi **Collega Instagram**, autorizza, e torni alla dashboard con l'account collegato.
+Ora la spia “Credenziali app Meta” diventa verde. Premi **Collega Instagram**, autorizza, e torni alla
+dashboard con l'account collegato.
 
 Al primo collegamento l'app fa subito una sincronizzazione: legge gli ultimi dodici contenuti, i loro
 commenti e le metriche degli ultimi sette giorni.

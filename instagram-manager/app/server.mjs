@@ -16,6 +16,8 @@ const PUBLIC = path.join(__dirname, 'public');
 const DATA_FILE = process.env.IGM_DATA_FILE || path.join(ROOT, 'data', 'state.json');
 const PORT = Number(process.env.PORT || 4321);
 const HOST = process.env.HOST || '0.0.0.0';
+const ENV_FILE = path.join(ROOT, '.env');
+const ENV_EXAMPLE = path.join(ROOT, '.env.example');
 const MAX_AUTO_PER_HOUR = 20;
 const MAX_MESSAGE_LENGTH = 400;
 
@@ -30,6 +32,27 @@ for (const file of [path.join(ROOT, '.env'), path.join(__dirname, '..', '.env')]
       process.env[m[1]] = m[2].replace(/^["']|["']$/g, '');
     }
   }
+}
+
+/**
+ * Scrive nel file .env mantenendo commenti e righe esistenti.
+ * Serve al pannello di configurazione: l'utente incolla le chiavi e noi le salviamo.
+ */
+function saveEnvFile(updates) {
+  let text = '';
+  if (fs.existsSync(ENV_FILE)) text = fs.readFileSync(ENV_FILE, 'utf8');
+  else if (fs.existsSync(ENV_EXAMPLE)) text = fs.readFileSync(ENV_EXAMPLE, 'utf8');
+  else text = '# Configurazione di Custode\n';
+
+  for (const [key, value] of Object.entries(updates)) {
+    const line = `${key}=${value}`;
+    const re = new RegExp(`^\\s*${key}\\s*=.*$`, 'm');
+    text = re.test(text) ? text.replace(re, line) : `${text.replace(/\s*$/, '')}\n${line}\n`;
+    process.env[key] = value;
+  }
+  fs.mkdirSync(path.dirname(ENV_FILE), { recursive: true });
+  fs.writeFileSync(ENV_FILE, `${text.trim()}\n`);
+  return ENV_FILE;
 }
 
 const store = new Store(DATA_FILE);
@@ -423,13 +446,19 @@ const staticTypes = {
   '.webp': 'image/webp',
   '.ico': 'image/x-icon',
   '.woff2': 'font/woff2',
+  '.webmanifest': 'application/manifest+json',
+  '.ico': 'image/x-icon',
+  '.icns': 'image/icns',
 };
 
 function serveStatic(req, res, urlPath) {
   const clean = decodeURIComponent(urlPath.split('?')[0]);
   const rel = clean === '/' ? 'index.html' : clean.replace(/^\/+/, '');
-  const file = path.join(PUBLIC, rel);
-  if (!file.startsWith(PUBLIC)) return fail(res, 403, 'Percorso non valido');
+  // /assets/ sta fuori da public/: contiene icone e manifest condivisi con i launcher.
+  const isAsset = clean.startsWith('/assets/');
+  const base = isAsset ? path.join(ROOT, 'assets') : PUBLIC;
+  const file = isAsset ? path.join(ROOT, 'assets', rel.replace(/^assets\//, '')) : path.join(PUBLIC, rel);
+  if (!file.startsWith(base)) return fail(res, 403, 'Percorso non valido');
   fs.readFile(file, (err, data) => {
     if (err) {
       if (clean !== '/' && !path.extname(clean)) return serveStatic(req, res, '/');
@@ -522,6 +551,64 @@ const server = http.createServer(async (req, res) => {
       } catch (e) {
         return back(`Collegamento non riuscito: ${e.message}`);
       }
+    }
+
+    // --- Configurazione dell'app Meta, dal pannello
+    if (pathname === '/api/config' && method === 'GET') {
+      const c = ig.config();
+      const secret = c.appSecret || '';
+      return json(res, 200, {
+        ok: true,
+        config: {
+          appId: c.appId,
+          redirectUri: c.redirectUri || `http://localhost:${PORT}/auth/callback`,
+          verifyToken: c.verifyToken,
+          hasSecret: Boolean(secret),
+          secretMask: secret ? `••••••••${secret.slice(-4)}` : '',
+          configured: ig.isConfigured(),
+          envFile: ENV_FILE,
+        },
+      });
+    }
+
+    if (pathname === '/api/config' && method === 'POST') {
+      const body = await readBody(req);
+      const updates = {};
+      const appId = String(body.appId || '').trim();
+      const appSecret = String(body.appSecret || '').trim();
+      const redirectUri = String(body.redirectUri || '').trim();
+      const verifyToken = String(body.verifyToken || '').trim();
+
+      if (appId && !/^[0-9]{6,25}$/.test(appId)) return fail(res, 400, 'L’App ID è fatto solo di cifre.');
+      if (appSecret && !/^[0-9a-fA-F]{20,}$/.test(appSecret)) {
+        return fail(res, 400, 'L’App Secret sembra incompleto (sono circa 32 caratteri esadecimali).');
+      }
+      if (redirectUri && !/^https?:\/\/[^\s]+$/i.test(redirectUri)) {
+        return fail(res, 400, 'Il redirect URI deve iniziare con http:// o https://');
+      }
+      if (verifyToken && verifyToken.length < 8) {
+        return fail(res, 400, 'Il verify token deve avere almeno 8 caratteri.');
+      }
+
+      if (appId) updates.IG_APP_ID = appId;
+      if (appSecret) updates.IG_APP_SECRET = appSecret;
+      if (redirectUri) updates.IG_REDIRECT_URI = redirectUri;
+      if (verifyToken) updates.IG_WEBHOOK_VERIFY_TOKEN = verifyToken;
+
+      if (!Object.keys(updates).length) return fail(res, 400, 'Non c’è niente da salvare.');
+      saveEnvFile(updates);
+      addActivity('settings', 'Credenziali dell’app Meta salvate.');
+      save();
+
+      const notes = [];
+      try {
+        const uri = new URL(process.env.IG_REDIRECT_URI);
+        if (Number(uri.port || (uri.protocol === 'https:' ? 443 : 80)) !== PORT) {
+          notes.push(`Il redirect URI punta alla porta ${uri.port || '(predefinita)'} ma Custode è in ascolto sulla ${PORT}: allinea PORT nel .env o cambia l’URI.`);
+        }
+      } catch { /* già validato */ }
+
+      return json(res, 200, { ok: true, configured: ig.isConfigured(), notes, envFile: ENV_FILE });
     }
 
     // --- API
@@ -620,16 +707,30 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, HOST, () => {
-  const url = `http://localhost:${PORT}`;
-  console.log(`\n  Instagram Manager — modalità ${state.mode}`);
-  console.log(`  Dashboard: ${url}`);
-  if (state.mode === 'demo') console.log('  Nessun account collegato: stai vedendo l’account di prova @bottega.luce.');
-  if (!process.env.ANTHROPIC_API_KEY) console.log('  ANTHROPIC_API_KEY assente: le bozze usano il motore locale.');
-  console.log('');
+export function startServer({ port = PORT, host = HOST } = {}) {
+  return new Promise((resolve, reject) => {
+    server.once('error', reject);
+    server.listen(port, host, () => {
+      const url = `http://localhost:${port}`;
+      console.log(`\n  Custode — Instagram Manager (modalità ${state.mode})`);
+      console.log(`  Dashboard: ${url}`);
+      if (state.mode === 'demo') console.log('  Nessun account collegato: stai vedendo l’account di prova @bottega.luce.');
+      if (!process.env.ANTHROPIC_API_KEY) console.log('  ANTHROPIC_API_KEY assente: le bozze usano il motore locale.');
+      console.log('');
 
-  // Prima impressione: in demo prepariamo qualche bozza, così la casella non è vuota.
-  if (state.mode === 'demo' && !state.items.some((i) => i.draft)) {
-    draftPending(4).catch((err) => console.error('Bozze iniziali', err.message));
-  }
-});
+      // Prima impressione: in demo prepariamo qualche bozza, così la casella non è vuota.
+      if (state.mode === 'demo' && !state.items.some((i) => i.draft)) {
+        draftPending(4).catch((err) => console.error('Bozze iniziali', err.message));
+      }
+      resolve({ server, port, url });
+    });
+  });
+}
+
+const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+if (isMain) {
+  startServer().catch((err) => {
+    console.error('Impossibile avviare il server:', err.message);
+    process.exit(1);
+  });
+}
