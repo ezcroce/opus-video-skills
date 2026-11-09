@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Instagram Manager — risposte calme e gentili</title>
+<link rel="stylesheet" href="/style.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='26' fill='%232f6b4f'/%3E%3Ccircle cx='50' cy='50' r='21' fill='none' stroke='%23f7f4ee' stroke-width='7'/%3E%3Ccircle cx='72' cy='28' r='5' fill='%23f7f4ee'/%3E%3C/svg%3E" />
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 100 100"><rect width="100" height="100" rx="26"/><circle cx="50" cy="50" r="21"/><circle cx="72" cy="28" r="5"/></svg>
+      </div>
+      <div>
+        <p class="brand-name">Custode</p>
+        <p class="brand-sub">assistente della community</p>
+      </div>
+    </div>
+
+    <nav class="nav" id="nav">
+      <button class="nav-item is-active" data-view="overview"><span>Panoramica</span><i></i></button>
+      <button class="nav-item" data-view="inbox"><span>Casella</span><b id="nav-badge">0</b></button>
+      <button class="nav-item" data-view="settings"><span>Impostazioni</span><i></i></button>
+      <button class="nav-item" data-view="connect"><span>Collegamento</span><i></i></button>
+    </nav>
+
+    <div class="account-card" id="account-card"></div>
+
+    <div class="sidebar-foot">
+      <p id="mode-note">—</p>
+      <button class="link-btn" id="sync-btn">Sincronizza ora</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <!-- PANORAMICA -->
+    <section class="view" id="view-overview">
+      <header class="view-head">
+        <div>
+          <p class="eyebrow">Oggi</p>
+          <h1>Come sta la tua community</h1>
+          <p class="lede">Follower, like, commenti e risposte degli ultimi 7 giorni — con quello che resta da fare.</p>
+        </div>
+        <div class="head-actions">
+          <button class="btn ghost" id="quiet-chip" type="button"></button>
+        </div>
+      </header>
+
+      <div class="stats" id="stats"></div>
+
+      <div class="grid-2">
+        <article class="card chart-card">
+          <div class="card-head">
+            <div>
+              <h2>Follower</h2>
+              <p class="muted">Ultimi 14 giorni</p>
+            </div>
+            <div class="delta" id="followers-delta"></div>
+          </div>
+          <div id="followers-chart" class="chart"></div>
+        </article>
+
+        <article class="card chart-card">
+          <div class="card-head">
+            <div>
+              <h2>Interazioni</h2>
+              <p class="muted">Like e commenti, per giorno</p>
+            </div>
+            <div class="legend"><span class="dot like"></span>like <span class="dot comment"></span>commenti</div>
+          </div>
+          <div id="engagement-chart" class="chart"></div>
+        </article>
+      </div>
+
+      <div class="grid-2">
+        <article class="card">
+          <div class="card-head"><div><h2>Clima dei commenti</h2><p class="muted">Come stanno scrivendo le persone</p></div></div>
+          <div id="sentiment" class="sentiment"></div>
+        </article>
+
+        <article class="card">
+          <div class="card-head"><div><h2>Attività</h2><p class="muted">Le ultime cose che ho fatto</p></div></div>
+          <ul class="activity" id="activity"></ul>
+        </article>
+      </div>
+
+      <article class="card note-card">
+        <div class="card-head"><div><h2>Cosa posso fare, e cosa no</h2><p class="muted">Trasparenza prima di tutto</p></div></div>
+        <div class="capabilities" id="capabilities"></div>
+      </article>
+    </section>
+
+    <!-- CASELLA -->
+    <section class="view is-hidden" id="view-inbox">
+      <header class="view-head">
+        <div>
+          <p class="eyebrow">Casella</p>
+          <h1>Da leggere e da rispondere</h1>
+          <p class="lede">Ogni bozza nasce in tono <span id="tone-label">gentile</span>. Se accendi l’invio automatico, partono solo le bozze che superano la soglia di sicurezza; le altre aspettano te.</p>
+        </div>
+        <div class="head-actions">
+          <div class="segmented" id="filters">
+            <button data-filter="pending" class="is-active">Da gestire</button>
+            <button data-filter="replied">Risposti</button>
+            <button data-filter="spam">Spam</button>
+            <button data-filter="all">Tutti</button>
+          </div>
+        </div>
+      </header>
+
+      <div class="inbox">
+        <div class="inbox-list" id="inbox-list"></div>
+        <div class="inbox-detail" id="inbox-detail">
+          <div class="empty">
+            <p>Seleziona un commento a sinistra.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- IMPOSTAZIONI -->
+    <section class="view is-hidden" id="view-settings">
+      <header class="view-head">
+        <div>
+          <p class="eyebrow">Impostazioni</p>
+          <h1>Come vuoi essere risposto</h1>
+          <p class="lede">Tono, permessi e paletti. Le modifiche valgono dalla prossima bozza.</p>
+        </div>
+      </header>
+
+      <form id="settings-form" class="settings-grid" novalidate>
+        <article class="card">
+          <h2>Voce</h2>
+          <label class="field">
+            <span>Tono</span>
+            <select name="tone" id="tone-select"></select>
+            <small id="tone-hint" class="muted"></small>
+          </label>
+          <label class="field">
+            <span>Firma (facoltativa)</span>
+            <input name="signature" type="text" maxlength="40" placeholder="es. — Chiara, Bottega Luce" />
+          </label>
+          <label class="field">
+            <span>Emoji</span>
+            <select name="emojiLevel">
+              <option value="nessuna">Nessuna</option>
+              <option value="poche">Poche</option>
+              <option value="libere">Libere</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Cosa puoi dire sui fatti</span>
+            <textarea name="answerFacts" rows="3" placeholder="Informazioni che l’assistente può usare senza inventare"></textarea>
+            <small class="muted">Solo ciò che è scritto qui viene usato per le risposte informative.</small>
+          </label>
+        </article>
+
+        <article class="card">
+          <h2>Permessi</h2>
+          <label class="switch">
+            <input type="checkbox" name="autoReply" />
+            <span class="switch-ui"></span>
+            <span class="switch-text">
+              <b>Invio automatico</b>
+              <small>Spento: ogni risposta aspetta il tuo clic. Acceso: partono solo le bozze sicure, con un ritardo simile a una persona.</small>
+            </span>
+          </label>
+
+          <label class="field">
+            <span>Soglia di sicurezza per l’invio automatico</span>
+            <input type="range" name="autoReplyMinConfidence" min="0.5" max="0.95" step="0.05" />
+            <small class="muted" id="threshold-label"></small>
+          </label>
+
+          <div class="field-row">
+            <label class="switch small">
+              <input type="checkbox" name="quietHours.enabled" id="quiet-enabled" />
+              <span class="switch-ui"></span>
+              <span class="switch-text"><b>Orario di silenzio</b><small>Nessun messaggio automatico in questa fascia.</small></span>
+            </label>
+          </div>
+          <div class="field-row">
+            <label class="field compact"><span>Dalle</span><input type="time" name="quietFrom" /></label>
+            <label class="field compact"><span>Alle</span><input type="time" name="quietTo" /></label>
+          </div>
+
+          <label class="field">
+            <span>Parole che richiedono una persona</span>
+            <textarea name="escalateWords" rows="2"></textarea>
+            <small class="muted">Separate da virgola. Se compaiono, la bozza viene fermata per il tuo controllo.</small>
+          </label>
+        </article>
+
+        <div class="settings-actions">
+          <button class="btn primary" type="submit">Salva impostazioni</button>
+          <p class="muted" id="settings-status"></p>
+        </div>
+      </form>
+    </section>
+
+    <!-- COLLEGAMENTO -->
+    <section class="view is-hidden" id="view-connect">
+      <header class="view-head">
+        <div>
+          <p class="eyebrow">Collegamento</p>
+          <h1>Il tuo account, con le regole di Instagram</h1>
+          <p class="lede">Si usa l’API ufficiale di Meta. Serve un account professionale (Business o Creator) e un’app Meta gratuita.</p>
+        </div>
+        <div class="head-actions" id="connect-actions"></div>
+      </header>
+
+      <div class="grid-2 align-start">
+        <article class="card">
+          <h2>Stato</h2>
+          <div id="connect-status" class="connect-status"></div>
+          <div class="checklist" id="checklist"></div>
+        </article>
+
+        <article class="card">
+          <h2>Tre passaggi, una volta sola</h2>
+          <ol class="steps">
+            <li><b>Account professionale.</b> Nell’app di Instagram: Impostazioni → Account → Passa a un account professionale. Gratis.</li>
+            <li><b>App Meta.</b> Su <code>developers.facebook.com</code> crea un’app, aggiungi il prodotto “Instagram” con “Instagram Login”, e copia App ID e App Secret nel file <code>.env</code>.</li>
+            <li><b>Webhook.</b> Nella stessa app aggiungi l’URL di callback <code>/webhook</code> e iscriviti ai campi <code>comments</code> e <code>messages</code>. Così i commenti arrivano in tempo reale.</li>
+          </ol>
+          <p class="muted small">La guida completa, con le schermate e i permessi esatti, è in <code>docs/setup-instagram-api.md</code>. Finché non colleghi nulla, questa dashboard lavora su un account di prova.</p>
+        </article>
+      </div>
+
+      <article class="card">
+        <h2>Permessi richiesti</h2>
+        <div class="scopes" id="scopes"></div>
+      </article>
+
+      <article class="card warn-card">
+        <h2>Le cose che questo strumento non farà</h2>
+        <ul class="plain">
+          <li><b>Like automatici e follow/unfollow.</b> L’API ufficiale non li espone: automatizzarli richiede bot non ufficiali, che violano i Termini di Instagram e portano a limitazioni o sospensioni. I like si leggono come numeri, non si mettono.</li>
+          <li><b>Scaricare la lista dei follower.</b> Non è disponibile. Si vedono il totale e l’andamento giornaliero, non i singoli nomi.</li>
+          <li><b>Rispondere a chiunque.</b> Solo ai commenti sui tuoi contenuti e ai direct che ricevi, e i direct solo entro la finestra consentita (24 ore, estendibile a 7 con l’etichetta “operatore umano”).</li>
+          <li><b>Pubblicare al posto tuo.</b> Qui si gestiscono conversazioni: post e reel restano una scelta tua.</li>
+        </ul>
+      </article>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="/app.js" type="module"></script>
+</body>
+</html>

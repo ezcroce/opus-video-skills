@@ -72,6 +72,13 @@ Describe the video in Claude Code. The matching skill is selected automatically,
 
 Each skill scaffolds a project, presents a storyboard, builds and reviews every shot, and writes the finished MP4 to the project's `out/` directory.
 
+## Other tools
+
+`instagram-manager/` is a small local dashboard for Instagram that is unrelated to the video skills: it reads
+comments and DMs through Meta's official Instagram API and drafts calm, kind replies for you to approve.
+Node only, no dependencies, with a demo account that runs without any credentials. Documentation is in
+Italian, inside the folder.
+
 ## Repository Structure
 
 | Path | Description |
@@ -79,6 +86,7 @@ Each skill scaffolds a project, presents a storyboard, builds and reviews every 
 | `.claude-plugin/marketplace.json` | Plugin marketplace manifest (one plugin per skill) |
 | `skills/painted-animation/` | Watercolour animation skill: engine, guides, examples |
 | `skills/kinetic-reel/` | Kinetic-typography reel skill: engine, guides, examples |
+| `instagram-manager/` | Instagram assistant: reads comments and DMs, drafts kind replies (not a video skill) |
 
 ## Adding a Style
 
