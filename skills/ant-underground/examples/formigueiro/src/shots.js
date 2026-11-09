@@ -65,9 +65,10 @@ function fadeCaption(pix, text, y, t, t0, t1, colors, scale = 2) {
 // ---------------------------------------------------------------------------
 
 /**
- * 1 — the title card.
+ * 1 — THE CLAIM. "ESTE FORMIGUEIRO / FORMIGAS"
+ *
  * The surface sits in the top quarter, the anthill below, and a golden ring
- * emblem hangs between the two lines of the title.
+ * emblem hangs between the two lines: the seal of a place with a name.
  */
 function shotTitle(pix, t, c) {
   const t0 = c.t0;
@@ -91,9 +92,11 @@ function shotTitle(pix, t, c) {
 }
 
 /**
- * 2 — "ELA QUER / SUBIR".
- * Deep underground. The lamp hangs high and throws the only warm light in
- * the frame; the ant stands in it, very small.
+ * 2 — THE WANT. "EL QUER / TRABALHAR"
+ *
+ * The lamp hangs high and throws the only warm light in the frame; the ant
+ * stands in it, very small. The want here is a job, not a transformation —
+ * the colony needs workers, which is why the comment is the reward later.
  */
 function shotAmbition(pix, t, c) {
   const t0 = c.t0;
@@ -116,16 +119,18 @@ function shotAmbition(pix, t, c) {
     ant(pix, { x: ax, y: ay, walk: t * 2, scale: 2 });
   }
 
-  fadeCaption(pix, 'ELA QUER', CAP_Y, t, t0 + 0.1, t0 + 1.7, [PAL.cream, PAL.amber]);
-  fadeCaption(pix, 'SUBIR', CAP_Y + 24, t, t0 + 1.3, t0 + 4.3, [PAL.cream, PAL.amber]);
+  fadeCaption(pix, 'EL QUER', CAP_Y, t, t0 + 0.1, t0 + 1.7, [PAL.cream, PAL.amber]);
+  fadeCaption(pix, 'TRABALHAR', CAP_Y + 24, t, t0 + 1.3, t0 + 4.3, [PAL.cream, PAL.amber]);
 
   vignette(pix, 0.62);
 }
 
 /**
- * 3 — "MAS ALTO / QUE O SOL".
- * The lamp is bigger and lower, and the ant climbs: over this shot she rises
- * up the frame, toward the light.
+ * 3 — THE INVITATION. "TRABALHA AQUI / QUEM COMENTA"
+ *
+ * "Trabalha aqui" has no subject: the viewer supplies it. The lamp is bigger
+ * and lower than in shot 2 — the light is overhead, because the viewer arrives
+ * from above. The ant climbs toward it over the shot.
  */
 function shotPursuit(pix, t, c) {
   const t0 = c.t0;
@@ -142,16 +147,18 @@ function shotPursuit(pix, t, c) {
   antShadow(pix, ax, ay + 10, 20);
   ant(pix, { x: ax, y: ay, walk: t * 3, scale: 2 });
 
-  fadeCaption(pix, 'MAS ALTO', CAP_Y, t, t0 + 0.1, t0 + 1.7, [PAL.cream, PAL.amber]);
-  fadeCaption(pix, 'QUE O SOL', CAP_Y + 24, t, t0 + 1.3, t0 + 4.3, [PAL.cream, PAL.amber]);
+  fadeCaption(pix, 'TRABALHA AQUI', CAP_Y, t, t0 + 0.1, t0 + 1.7, [PAL.cream, PAL.amber]);
+  fadeCaption(pix, 'QUEM COMENTA', CAP_Y + 24, t, t0 + 1.3, t0 + 4.3, [PAL.cream, PAL.amber]);
 
   vignette(pix, 0.6);
 }
 
 /**
- * 4 — "O SOL É / TANTO ALTO".
- * The surface: a cold blue sky, tall green stalks, the ant digging up through
- * the ground line with a pale sickle. The biggest she has ever been.
+ * 4 — THE TEASE. "DEBAIXO / ELA CAVOU"
+ *
+ * "Debaixo" points the way the story will go: deeper. The frame cuts away
+ * from the lamp to the surface — cold blue sky, tall green stalks — and she
+ * digs with a pale sickle. It ends on a hole, not on a resolution.
  */
 function shotDig(pix, t, c) {
   const t0 = c.t0;
@@ -180,14 +187,16 @@ function shotDig(pix, t, c) {
   pebbles(pix, t, 8, 8);
   embers(pix, t, 8);
 
-  fadeCaption(pix, 'O SOL É', CAP_Y, t, t0 + 0.1, t0 + 1.7, [PAL.cream, PAL.amber]);
-  fadeCaption(pix, 'TANTO ALTO', CAP_Y + 24, t, t0 + 1.3, t0 + 4.3, [PAL.cream, PAL.amber]);
+  fadeCaption(pix, 'DEBAIXO', CAP_Y, t, t0 + 0.1, t0 + 1.7, [PAL.cream, PAL.amber]);
+  fadeCaption(pix, 'ELA CAVOU', CAP_Y + 24, t, t0 + 1.3, t0 + 4.3, [PAL.cream, PAL.amber]);
 
   vignette(pix, 0.5);
 }
 
 /**
- * 5 — the closing card. The emblem shrinks away and the frame fades to black.
+ * 5 — THE CLOSER. The claim again, the emblem shrinking away, the frame
+ * fading to black. It ends on the world it has established, and on the hole
+ * that is still open.
  */
 function shotOutro(pix, t, c) {
   const t0 = c.t0, dur = c.dur;

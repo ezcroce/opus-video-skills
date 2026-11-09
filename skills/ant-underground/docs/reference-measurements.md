@@ -96,14 +96,21 @@ off the largest flat clusters.
 
 ## Story beats visible in the stills
 
-1. `ESTE FORMIGUEIRO / FORMIGAS` — title card over a surface + underground
-   split, with a golden ring/egg emblem between the two lines.
-2. `QUER SER / VIRA FORMIGA` — underground, the ant's ambition; the lamp
-   hangs above, two violet mushrooms flank the frame.
-3. `QUEM SEGUE / DO GÉU` — the pursuit.
-4. `DO GÉU / ELA CAVOU` — the surface, green stalks, the ant digging with
-   a pale blade; the caption sits over the soil.
-5. `ESTE FORMIGUEIRO / FORMIGAS` — title card again (closing).
+Reading the captions in order, the reel is narrated by the ant **in the second person, in the
+present tense** — it is telling the viewer what the viewer just did by following:
+
+1. `ESTE FORMIGUEIRO / FORMIGAS` — **the claim**. A title card over a surface +
+   underground split, with a golden ring/egg emblem between the two lines.
+2. `QUER SER` + `VIRA FORMIGA` — **the want**, in the first person. Underground,
+   the lamp hangs above and two violet mushrooms flank the frame.
+3. `VIRA FORMIGA` + `QUEM SEGUE` — **the invitation**. The same words as the
+   end of shot 2, but now the subject has dropped: *you* become an ant. The
+   lamp is bigger and lower — the light is overhead, because "quem segue" means
+   arriving from above.
+4. `DO GÉU` + `ELA CAVOU` — **the tease**. The surface, green stalks, the ant
+   digging with a pale blade. The subject changes again: *she* dug.
+5. `ESTE FORMIGUEIRO / FORMIGAS` — the closing card, the emblem shrinking away.
 
 The reel is a vertical, captioned, pixel-art short with a warm underground
-palette and a single amber light source.
+palette and a single amber light source. Its subject is **the viewer**, not the
+ant — see [../references/storytelling.md](../references/storytelling.md).

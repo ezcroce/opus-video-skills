@@ -19,13 +19,13 @@ Each skill in this repository teaches Claude Opus 5.5 to produce a complete vide
 |---|---|---|
 | [painted-animation](skills/painted-animation/) | Hand-painted watercolour and ink cartoon, with character acting | Animated shorts, music videos, lyric videos with karaoke |
 | [kinetic-reel](skills/kinetic-reel/) | Kinetic typography: condensed display type, HUD micro-type, WebGL layers | Portfolio and work reels, showreels, product and intro films |
-| [ant-underground](skills/ant-underground/) | Pixel art with modern lighting: dithered skies, soft light pools, bitmap captions | Vertical short-form stories, retro pixel shorts |
+| [ant-underground](skills/ant-underground/) | Pixel art with modern lighting: dithered skies, soft light pools, bitmap captions | Vertical reels with a hook: recruit the viewer inside the fiction |
 
 ### ant-underground
 
 ![ant-underground](skills/ant-underground/docs/reel-sheet.jpg)
 
-Draws every frame into a 180×320 pixel buffer and upscales it ×6, so the grid survives. The sky is dithered with a Bayer matrix, the soil is a two-octave noise lattice, a hanging lamp throws a soft pool of light that falls downward, and the captions are a chunky bitmap font in two tones. Example: "A Formigueiro", a 23 s vertical short about an ant who climbs out of the anthill. [Documentation](skills/ant-underground/README.md).
+Draws every frame into a 180×320 pixel buffer and upscales it ×6, so the grid survives. The sky is dithered with a Bayer matrix, the soil is a two-octave noise lattice, a hanging lamp throws a soft pool of light that falls downward, and the captions are a chunky bitmap font in two tones. The captions carry the whole story: the ant speaks in the second person, the subject of "becomes an ant" is dropped on purpose, and the viewer discovers it is the subject — so the reel recruits without ever writing the word "follow". Example: "A Formigueiro", a 23 s vertical short in four beats — the claim, the want, the invitation, the cliffhanger. [Documentation](skills/ant-underground/README.md).
 
 ### painted-animation
 

@@ -1,17 +1,17 @@
-// shots.js — the shots of the reel, one function per shot.
+// shots.js — the shots of the reel.
 //
-// Each shot paints the whole buffer from a time `t` (seconds since the reel
-// started). Shots are registered in SCENES and looked up by name from the
-// timeline in cues.js. Pure functions only: no state, no Math.random().
+// The story, as the captions tell it (see references/storytelling.md):
 //
-// The reel as reconstructed from the reference frames:
-//   1. title      "ESTE FORMIGUEIRO / FORMIGAS" with the golden ring emblem
-//   2. ambition   "QUER SER / VIRA FORMIGA" — the lamp above, two violet
-//                 mushrooms flanking the frame
-//   3. pursuit    "QUEM SEGUE / DO GÉU" — the lamp closer, the ant below
-//   4. the dig    "DO GÉU / ELA CAVOU" — the surface, green stalks, the ant
-//                 digging with a pale blade
-//   5. title      the closing card
+//   1. THE CLAIM      ESTE FORMIGUEIRO / FORMIGAS     — this is a place, and there are things in it
+//   2. THE WANT       QUER SER / VIRA FORMIGA          — the speaker's ambition, in the first person
+//   3. THE INVITATION VIRA FORMIGA / QUEM SEGUE       — the subject drops: *you* become an ant
+//   4. THE TEASE      DO GÉU / ELA CAVOU               — she dug, from the sky. Something is deeper.
+//
+// The grammar is the whole trick: the subject of "vira formiga" is the viewer, not the ant.
+// "Quem segue" names the condition (following the button) without ever writing the word.
+//
+// Each shot paints the whole buffer from a time `t` (seconds since the reel started).
+// Pure functions only: no state, no Math.random().
 
 import { Pix, PAL, hash, hash2, noise1, mix, shade, ease, clamp01, win } from './pixel.js';
 import { ant, antShadow, lamp, mushroom, roots, pebble, ember, ringEmblem, stalks } from './props.js';
@@ -36,13 +36,6 @@ function underground(pix, t, opts = {}) {
   hangingRoots(pix, t, opts.rootSeed ?? 3, 0);
   pebbles(pix, t, opts.pebbleSeed ?? 5, opts.pebbles ?? 16, 0);
   embers(pix, t, opts.embers ?? 14, 0);
-}
-
-/** the surface base: sky, ridge, ground band */
-function surface(pix, t, opts = {}) {
-  drawSky(pix, t);
-  drawGround(pix, t);
-  stalks(pix, { y: WORLD.surfaceY - WORLD.groundBand, h: opts.h ?? 96, seed: 4, sway: t * 0.4, count: opts.count ?? 24 });
 }
 
 /**
@@ -83,15 +76,15 @@ function fadeCaption(pix, text, y, t, t0, t1, colors, scale = 2) {
 // ---------------------------------------------------------------------------
 
 /**
- * 1 — the title card.
- * The surface sits in the top quarter, the underground fills the rest, and a
- * golden ring emblem hangs between the two lines of the title.
+ * 1 — THE CLAIM. "ESTE FORMIGUEIRO / FORMIGAS"
+ *
+ * The surface in the top quarter, the anthill below, and the golden ring
+ * emblem between the two lines: the seal of a place with a name.
  */
 function shotTitle(pix, t, c) {
   const t0 = c.t0;
-  const TY = WORLD.titleY;      // where the surface band ends and the soil starts
+  const TY = WORLD.titleY;
 
-  // the top band shows the surface, the rest is underground
   drawSky(pix, t, TY);
   drawGround(pix, t, TY, 12);
   drawSoil(pix, t, TY, WORLD.h);
@@ -102,9 +95,8 @@ function shotTitle(pix, t, c) {
   embers(pix, t, 12, TY);
 
   // the emblem, in the soil between the two title lines
-  ringEmblem(pix, { x: 90, y: TY + 52, r: 15, t: t });
+  ringEmblem(pix, { x: 90, y: TY + 52, r: 15, t });
 
-  // the two title lines, above and below the emblem
   fadeCaption(pix, 'ESTE FORMIGUEIRO', TY - 52, t, t0 + 0.1, t0 + 2.2, [PAL.cream]);
   fadeCaption(pix, 'FORMIGAS', TY + 88, t, t0 + 1.4, t0 + 3.6, [PAL.cream]);
 
@@ -113,9 +105,12 @@ function shotTitle(pix, t, c) {
 
 // ---------------------------------------------------------------------------
 /**
- * 2 — "QUER SER / VIRA FORMIGA".
- * The lamp hangs above and throws the only light in the frame; two violet
- * mushrooms sit in the dark on either side.
+ * 2 — THE WANT. "QUER SER / VIRA FORMIGA"
+ *
+ * The lamp hangs above and throws the only light in the frame; the ant stands
+ * in it, alone. Two violet mushrooms in the dark on either side.
+ *
+ * The picture's job: the want is solitude under a light you cannot reach.
  */
 function shotAmbition(pix, t, c) {
   const t0 = c.t0;
@@ -138,7 +133,6 @@ function shotAmbition(pix, t, c) {
     ant(pix, { x: ax, y: ay, walk: t * 2, scale: 2 });
   }
 
-  // the captions sit low, clear of the lamp
   fadeCaption(pix, 'QUER SER', CAP_Y, t, t0 + 0.1, t0 + 1.7, [PAL.cream, PAL.amber]);
   fadeCaption(pix, 'VIRA FORMIGA', CAP_Y + 24, t, t0 + 1.3, t0 + 4.3, [PAL.cream, PAL.amber]);
 
@@ -147,8 +141,11 @@ function shotAmbition(pix, t, c) {
 
 // ---------------------------------------------------------------------------
 /**
- * 3 — "QUEM SEGUE / DO GÉU".
- * The lamp is bigger and lower — the ant is directly under it, in the light.
+ * 3 — THE INVITATION. "VIRA FORMIGA / QUEM SEGUE"
+ *
+ * "Vira formiga" is the payoff of the previous shot and the *start* of this
+ * one — the same words, now with the subject the viewer. The lamp is bigger
+ * and lower: the invitation is arriving from above, and the light is overhead.
  */
 function shotPursuit(pix, t, c) {
   const t0 = c.t0;
@@ -164,17 +161,20 @@ function shotPursuit(pix, t, c) {
   antShadow(pix, ax, ay + 10, 20);
   ant(pix, { x: ax, y: ay, walk: t * 3, scale: 2 });
 
-  fadeCaption(pix, 'QUEM SEGUE', CAP_Y, t, t0 + 0.1, t0 + 1.7, [PAL.cream, PAL.amber]);
-  fadeCaption(pix, 'DO GÉU', CAP_Y + 24, t, t0 + 1.3, t0 + 4.3, [PAL.cream, PAL.amber]);
+  fadeCaption(pix, 'VIRA FORMIGA', CAP_Y, t, t0 + 0.1, t0 + 1.7, [PAL.cream, PAL.amber]);
+  fadeCaption(pix, 'QUEM SEGUE', CAP_Y + 24, t, t0 + 1.3, t0 + 4.3, [PAL.cream, PAL.amber]);
 
   vignette(pix, 0.6);
 }
 
 // ---------------------------------------------------------------------------
 /**
- * 4 — "DO GÉU / ELA CAVOU".
- * The surface: orange sky, green stalks, the ant digging with a pale blade.
- * The lower half is underground, where the caption sits.
+ * 4 — THE TEASE. "DO GÉU / ELA CAVOU"
+ *
+ * "Do céu" picks up "quem segue" — the viewer came from the sky — and then
+ * the subject changes again: *ela* dug. Another ant, a woman, digging in
+ * daylight. The frame cuts to the surface, because the story leaves the
+ * colony here. It ends on a hole, not on a resolution.
  */
 function shotDig(pix, t, c) {
   const t0 = c.t0;
@@ -184,13 +184,13 @@ function shotDig(pix, t, c) {
   drawSoil(pix, t, WORLD.surfaceY, WORLD.h);
   drawBoundary(pix);
 
-  // the ant digs at the boundary
+  // she digs at the boundary
   const ax = 86;
   const ay = WORLD.surfaceY - 18;
   antShadow(pix, ax, ay + 10, 20);
   ant(pix, { x: ax, y: ay, walk: t * 4, scale: 2, blade: true });
 
-  // disturbed soil piling up beside the hole
+  // the hole she is opening, and the soil she pushed up on the way
   for (let i = 0; i < 22; i++) {
     const r1 = hash2(i, 71), r2 = hash2(i, 91);
     const x = Math.round(96 + r1 * 26);
@@ -211,7 +211,10 @@ function shotDig(pix, t, c) {
 
 // ---------------------------------------------------------------------------
 /**
- * 5 — the closing card, same as the opening but with the emblem pulsing out.
+ * 5 — the closer. The claim again, the emblem shrinking away.
+ *
+ * This is where a "part two" would start, so the reel must end on the world
+ * it has established — and on the hole that is still open.
  */
 function shotOutro(pix, t, c) {
   const t0 = c.t0, dur = c.dur;
@@ -229,7 +232,7 @@ function shotOutro(pix, t, c) {
 
   // the emblem shrinks away
   const ek = ease.expoOut(win(t, t0, t0 + 0.5));
-  ringEmblem(pix, { x: 90, y: TY + 46, r: Math.max(1, Math.round(14 * ek)), t: t });
+  ringEmblem(pix, { x: 90, y: TY + 52, r: Math.max(1, Math.round(15 * ek)), t });
 
   fadeCaption(pix, 'ESTE FORMIGUEIRO', TY - 52, t, t0 + 0.1, t0 + 2.2, [PAL.cream]);
   fadeCaption(pix, 'FORMIGAS', TY + 88, t, t0 + 1.4, t0 + 3.6, [PAL.cream]);
@@ -248,11 +251,11 @@ function shotOutro(pix, t, c) {
 // the registry
 // ---------------------------------------------------------------------------
 export const SCENES = {
-  title:     { fn: shotTitle,     dur: 4.0 },
-  ambition:  { fn: shotAmbition,  dur: 5.0 },
-  pursuit:   { fn: shotPursuit,   dur: 5.0 },
-  dig:       { fn: shotDig,       dur: 5.0 },
-  outro:     { fn: shotOutro,     dur: 4.0 },
+  title:     { fn: shotTitle,    dur: 4.0 },
+  ambition:  { fn: shotAmbition, dur: 5.0 },
+  pursuit:   { fn: shotPursuit,  dur: 5.0 },
+  dig:       { fn: shotDig,      dur: 5.0 },
+  outro:     { fn: shotOutro,    dur: 4.0 },
 };
 
 /**

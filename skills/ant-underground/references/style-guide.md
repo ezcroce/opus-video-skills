@@ -120,8 +120,13 @@ Nine pixels tall at scale 1, sixteen at scale 2 (which is what the reel uses).
 ## What the captions are for
 
 The reel tells its story **only through the captions**. The visuals are the world; the words are
-the plot. So:
+the plot, and the plot is about the viewer. So:
 
 - Every shot carries a line, and the line lands on the shot, not before or after it.
 - Two lines per shot is the rhythm: the first sets it up, the second lands it.
 - The captions must leave the screen before the next shot's arrive.
+- Each line is **at most two words** — it is read at a glance, often muted.
+- The subject of a line is dropped on purpose, so the viewer fills it in.
+
+The grammar and the engagement mechanics are in
+[storytelling.md](storytelling.md) — that is the part that decides whether the reel works.

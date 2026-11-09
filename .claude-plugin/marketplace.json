@@ -30,12 +30,12 @@
     },
     {
       "name": "ant-underground",
-      "description": "Vertical pixel-art narrative reels: a low-resolution pixel buffer with dithered skies, soft light pools and a bitmap caption font, rendered frame by frame in headless Chrome with a synthesized score.",
+      "description": "Vertical pixel-art reels that recruit the viewer: a low-resolution pixel buffer with dithered skies, soft light pools and a bitmap caption font, plus a four-beat story method — the claim, the want, the invitation, the cliffhanger — with the call to action hidden inside the fiction.",
       "source": "./",
       "strict": false,
       "skills": ["./skills/ant-underground"],
       "category": "design",
-      "keywords": ["pixel-art", "retro", "vertical", "short-form", "reel"],
+      "keywords": ["pixel-art", "retro", "vertical", "short-form", "reel", "hook", "storytelling"],
       "homepage": "https://github.com/tuzhechen2005/opus-video-skills/tree/main/skills/ant-underground"
     }
   ]
